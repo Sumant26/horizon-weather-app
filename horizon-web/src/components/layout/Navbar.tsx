@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, Sparkles } from 'lucide-react';
+import { Download, Github } from 'lucide-react';
 import { APP_METADATA } from '../../core/constants/theme';
 
 interface NavbarProps {
@@ -29,7 +29,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
 
-        {/* Links */}
+        {/* Navigation Links */}
         <nav className="navbar-nav">
           <button onClick={onScrollToFeatures} className="nav-link">
             Philosophy
@@ -47,16 +47,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           </a>
         </nav>
 
-        {/* Actions */}
+        {/* Primary Action Button */}
         <div className="navbar-actions">
           <a
-            href={APP_METADATA.pwaUrl}
+            href={APP_METADATA.githubUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-ghost"
+            title="GitHub Repository"
           >
-            <Sparkles size={15} />
-            <span>Launch Web</span>
+            <Github size={16} />
+            <span>Source</span>
           </a>
           <button onClick={onScrollToDownload} className="btn btn-primary">
             <Download size={15} />

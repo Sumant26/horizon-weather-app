@@ -8,21 +8,19 @@ export const APP_METADATA = {
   apkSize: '18.4 MB',
   apkChecksum: 'a8f9c1e4d3b2e7f8092348571029384756102938475610293847561029384756',
   apkDownloadUrl: '/downloads/horizon-release.apk',
-  pwaUrl: 'http://127.0.0.1:8080/',
   githubUrl: 'https://github.com/Sumant26/horizon-weather-app',
   releaseDate: 'September 2026',
 };
 
 export const COLOR_TOKENS = {
-  // Cozy Atmosphere Palette from Flutter AppColors
-  bgCozyDark: '#140D09', // Deep rich roasted ground
-  bgCozyEspresso: '#22160E', // Cozy dark roasted espresso
-  bgCozyDusk: '#382315', // Warm honey-amber dusk
-  bgSurface: '#1C1612', // Warm cozy card surface
-  bgCard: '#201B17', // Cozy warm card (AppColors.cardDecoration)
-  bgGlass: 'rgba(32, 27, 23, 0.78)', // Warm translucent glass
-  borderGlass: 'rgba(246, 173, 85, 0.16)', // Subtle honey-gold border
-  borderGlassHover: 'rgba(246, 173, 85, 0.38)',
+  // Deep Dark / Velvet Obsidian Base Palette
+  bgDark: '#080B11', // Midnight velvet obsidian ground
+  bgSurface: '#0E131E', // Dark high-contrast surface
+  bgCard: '#131A28', // Deep glass card surface
+  bgCardHover: '#182132',
+  bgGlass: 'rgba(19, 26, 40, 0.78)', // Translucent dark glass
+  borderGlass: 'rgba(246, 173, 85, 0.15)', // Honey-gold subtle border
+  borderGlassHover: 'rgba(246, 173, 85, 0.40)',
 
   // AppColors Accents & Highlights
   accentGold: '#F6AD55', // AppColors.honeyGold
@@ -37,4 +35,3 @@ export const COLOR_TOKENS = {
   textSecondary: '#C4B5A5', // Warm muted stone
   textMuted: '#8C7A6B', // Warm soft slate
 };
-

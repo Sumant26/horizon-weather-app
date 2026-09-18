@@ -1,6 +1,12 @@
 # Horizon — Weather for Humans, Not Meteorologists
 
-> A minimalist, high-contrast editorial weather experience crafted for instant glanceability — available as a native Flutter mobile application and a modern React web companion portal.
+> A minimalist, high-contrast, editorial weather intelligence ecosystem crafted for instant glanceability — featuring a native Flutter mobile client and a dark, modern React web companion.
+
+[![Horizon CI Pipeline](https://github.com/Sumant26/horizon-weather-app/actions/workflows/ci.yml/badge.svg)](https://github.com/Sumant26/horizon-weather-app/actions/workflows/ci.yml)
+[![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter)](https://flutter.dev)
+[![React](https://img.shields.io/badge/React-18.x-61DAFB?logo=react)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript)](https://www.typescriptlang.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
@@ -9,7 +15,7 @@
 **Horizon** is a design-forward weather application that prioritizes clarity, meaning, and human-first glanceability over raw information overload. Rather than flooding the user with cluttered radar maps and dense numerical tables, Horizon translates meteorological metrics into actionable insights:
 - Telling you what the weather *means* for your day.
 - Explaining how the current temperature compares directly to **yesterday at this exact hour**.
-- Highlighting optimal 2-hour comfort windows for outdoor activities.
+- Highlighting optimal 2-hour comfort windows for outdoor activities (running, cycling, stargazing, dining).
 - Recommending only the gear you actually need (sunglasses, jacket, umbrella).
 - Calculating atmospheric clarity for night-sky stargazing.
 
@@ -17,36 +23,50 @@
 
 ## Monorepo & Directory Structure
 
-The repository contains both the native Flutter mobile client and the React web companion:
-
 ```
 horizon_weather_app/
-├── lib/                             # Flutter Mobile Application
-│   ├── core/                        # Themes, constants, utilities, loggers
-│   ├── data/
+├── .github/
+│   └── workflows/
+│       ├── ci.yml                   # Unified GitHub Actions CI Pipeline
+│       └── deploy-web.yml           # Web Build & Packaging Workflow
+├── .husky/
+│   └── pre-commit                   # Monorepo pre-commit quality gate (Dart & Web)
+│
+├── lib/                             # Native Flutter Application
+│   ├── core/                        # Cross-cutting concerns: themes, constants, utilities, loggers
+│   │   ├── constants/               # AppColors, typography scales, layout dimensions
+│   │   └── utils/                   # AppLogger, date formatters, unit converters
+│   ├── data/                        # Data Layer
+│   │   ├── datasources/             # Remote API clients and local cache adapters
 │   │   ├── models/                  # WeatherData entity + computed property getters
-│   │   └── repositories/            # Mock & simulated microclimate data layer
-│   └── presentation/
-│       ├── screens/                 # HomeScreen & compositional layouts
+│   │   └── repositories/            # Repository implementations (Mock / Open-Meteo)
+│   ├── domain/                      # Domain Layer (Pure Dart business logic)
+│   │   ├── entities/                # WeatherEntity, ActivityProfile, AstronomyInfo
+│   │   └── repositories/            # Abstract repository interfaces
+│   └── presentation/                # Presentation Layer
+│       ├── components/              # Modular atomic UI widgets
+│       ├── screens/                 # HomeScreen & layout compositions
 │       └── state/                   # Sealed WeatherState & WeatherNotifier
 │
-├── horizon-web/                     # React + TypeScript Web Companion & Showcase
-│   ├── public/                      # Static assets & manifest
+├── horizon-web/                     # React + TypeScript Web Companion
+│   ├── public/                      # Static assets, release APKs, manifest.json
 │   ├── src/
-│   │   ├── components/              # Layout, UI elements, and showcase sections
+│   │   ├── components/
 │   │   │   ├── layout/              # Navbar, Footer
-│   │   │   ├── sections/            # Hero, DownloadCenter, Features, Specs, FAQ
-│   │   │   └── ui/                  # Modals (Sideload Guide), Badges, Cards
-│   │   ├── core/constants/          # Theme tokens, metadata, color schemes
-│   │   ├── domain/                  # Types and data contracts
-│   │   └── state/                   # State holders and hooks
-│   ├── package.json                 # Web scripts & dependencies
-│   └── vite.config.ts               # Vite configuration
+│   │   │   ├── sections/            # HeroSection, FeaturesShowcase, DownloadCenter
+│   │   │   └── ui/                  # SideloadGuideModal, QR Generator, Badges
+│   │   ├── core/constants/          # Metadata, deep dark color tokens, typography
+│   │   ├── domain/                  # TypeScript interfaces and feature contracts
+│   │   └── state/                   # UI state hooks and download tracking
+│   ├── package.json                 # Web build scripts & dependencies
+│   ├── tsconfig.json                # TypeScript compiler configuration
+│   └── vite.config.ts               # Vite build & bundle optimizations
 │
 ├── test/                            # Flutter automated test suite
-├── pubspec.yaml                     # Flutter package metadata
-├── AGENTS.md                        # Architecture guidelines, standards & roadmap
-└── README.md                        # Documentation & setup instructions
+├── pubspec.yaml                     # Flutter package specifications
+├── AGENTS.md                        # Architectural guidelines & engineering standards
+├── README.md                        # Documentation & setup guide
+└── spec.md                          # Technical specification document
 ```
 
 ---
@@ -54,7 +74,7 @@ horizon_weather_app/
 ## 1. Horizon Mobile App (Flutter)
 
 ### Core Features
-- **Human-First Summaries**: Natural language briefings comparing today's trend against yesterday (e.g., *"About 2.3°C warmer than yesterday at this exact hour"*).
+- **Human-First Summaries**: Natural language briefings comparing today's trend against yesterday (e.g., *"About 2.8°C cooler than yesterday at this exact hour"*).
 - **Dynamic Condition Gradients**: Procedural, smooth background transitions reflecting ambient conditions (Clear Day, Clear Night, Rainy, Overcast, Extreme Heat).
 - **Kinetic Typography**: Temperature typography dynamically shifts weight and styling based on heat intensity.
 - **Perfect Activity Windows**: Intelligent computation of the best 2-hour window for outdoor activities (Running, Cycling, Stargazing).
@@ -73,12 +93,6 @@ horizon_weather_app/
 
 ### Getting Started (Mobile)
 
-#### Prerequisites
-- [Flutter SDK](https://flutter.dev/docs/get-started/install) >= 3.0.0
-- Dart SDK >= 3.0.0
-- Android Studio / Xcode (for simulators and device deployment)
-
-#### Run Locally
 ```bash
 # Clone the repository
 git clone https://github.com/Sumant26/horizon-weather-app.git
@@ -87,43 +101,29 @@ cd horizon-weather-app
 # Install Flutter dependencies
 flutter pub get
 
-# Run static analysis
+# Run static analysis (0 error / 0 warning standard)
 flutter analyze
 
-# Execute tests
+# Execute automated tests
 flutter test
 
-# Launch the app on a connected device/emulator
+# Launch the app on a connected device or emulator
 flutter run
-```
-
-#### Build Release Artifacts
-```bash
-# Android APK
-flutter build apk --release
-
-# Android App Bundle (AAB)
-flutter build appbundle --release
-
-# iOS (macOS only)
-flutter build ios --release
 ```
 
 ---
 
 ## 2. Horizon Web (`horizon-web`)
 
-**Horizon Web** is the official web companion and distribution portal for Horizon. Built with React 18, TypeScript, and Vite, it delivers an editorial showcase, live interactive weather preview, and an integrated multi-platform distribution center.
+**Horizon Web** is the official dark companion showcase and direct distribution portal for Horizon. Built with React 18, TypeScript, and Vite, it delivers an editorial showcase and an integrated multi-platform distribution center.
 
 ### Web Features
-- **Editorial Showcase & Live Preview**: Interactive showcase demonstrating Horizon's glanceability and dynamic ambient color system.
-- **Multi-Channel Download Center**:
-  - **Android APK Sideload**: Direct APK download with dynamically generated QR codes for instant mobile scanning and SHA-256 integrity verification.
-  - **iOS PWA Installation Walkthrough**: Step-by-step visual guide for adding Horizon to the iOS Home Screen as a standalone web app.
-  - **Instant Web Edition**: One-click launcher for the browser-based client.
+- **Deep Dark Velvet Obsidian Aesthetic**: High-contrast OLED dark palette (`#080B11`), warm honey-gold accents (`#F6AD55`), and soft ivory linen typography (`#FAF6F0`).
+- **Editorial Showcase & Live Preview**: Interactive glanceable preview demonstrating Horizon's temperature delta and comfort window computations.
+- **Direct Multi-Platform Distribution**:
+  - **Android APK Direct Sideload**: Direct APK download with dynamically generated QR codes for instant mobile scanning and SHA-256 integrity verification.
+  - **iOS PWA Installation Walkthrough**: Visual 3-step guide for adding Horizon to the iOS Home Screen as a standalone web app.
 - **Interactive Sideloading Guide Modal**: Step-by-step security and installation walkthrough for Android users.
-- **Technical Specifications & FAQ**: Clear breakdown of supported architectures, runtime requirements, privacy guarantees, and permissions.
-- **Glassmorphism Dark-Mode Aesthetics**: High-contrast OLED black palette with subtle glassmorphic surfaces and responsive layouts.
 
 ### Web Tech Stack
 | Package | Version | Purpose |
@@ -147,29 +147,28 @@ npm install
 # Start development server
 npm run dev
 
-# Run unit tests
+# Run unit and component tests
 npm test
 
 # Typecheck and build for production
 npm run build
-
-# Preview production build locally
-npm run preview
 ```
 
 ---
 
-## Planned Capabilities & Feature Roadmap
+## 3. Quality Gate & CI/CD
 
-For detailed architectural guidelines, engineering standards, and future milestones, refer to [AGENTS.md](AGENTS.md).
+### Husky Git Hooks
+The repository includes a pre-commit quality gate (`.husky/pre-commit`) that automatically verifies:
+- `dart format --set-exit-if-changed .` (Dart formatting)
+- `flutter analyze` (Strict static analysis)
+- `flutter test` (Flutter unit and widget tests)
+- `npm run typecheck` & `npm test` in `horizon-web/` (TypeScript & Vitest tests)
 
-Upcoming roadmap capabilities include:
-1. **Live Open-Meteo Integration**: Real-time forecasts and historical archive queries for dynamic yesterday vs. today deltas.
-2. **Live GPS & Multi-Location**: Geolocation auto-detection, reverse geocoding, and multi-city horizontal paging.
-3. **Air Quality Index (AQI)**: Real-time PM2.5, PM10, and Ozone readings with actionable health recommendations.
-4. **Hourly Timeline & 7-Day Spectrum**: Scrubbable 24-hour horizontal forecast strip and high/low temperature spectrum bars.
-5. **Celestial Astronomical Arc**: Dynamic Sun and Moon position tracker with golden hour and lunar phase indicators.
-6. **Subtle Atmospheric Canvas Effects**: Isolated `CustomPainter` layers for ambient mist, rain streaks, and star fields.
+### GitHub Actions Pipeline
+Continuous Integration is configured via `.github/workflows/ci.yml`:
+- **Flutter Job**: Validates formatting, static analysis, unit tests with coverage, and builds release APKs.
+- **Web Job**: Performs type checking, ESLint inspection, Vitest test execution, and production bundling.
 
 ---
 
@@ -184,4 +183,4 @@ Horizon is built around three core principles:
 
 ## License
 
-This project is open-source and available under the MIT License for personal and educational use.
+This project is open-source and available under the [MIT License](LICENSE).

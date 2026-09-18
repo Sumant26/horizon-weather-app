@@ -7,10 +7,8 @@ import {
   HelpCircle,
   Smartphone,
   Apple,
-  Globe,
   Share,
   PlusSquare,
-  ExternalLink,
 } from 'lucide-react';
 import { APP_METADATA } from '../../core/constants/theme';
 import { PlatformType } from '../../core/utils/platform_detector';
@@ -47,7 +45,7 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
     const downloadUrl =
       typeof window !== 'undefined'
         ? `${window.location.origin}${APP_METADATA.apkDownloadUrl}`
-        : APP_METADATA.pwaUrl;
+        : APP_METADATA.apkDownloadUrl;
 
     generateQrDataUrl(downloadUrl).then(setQrDataUrl);
   }, []);
@@ -63,12 +61,7 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
       id: 'ios' as PlatformType,
       label: 'iOS / iPadOS',
       icon: <Apple size={18} />,
-      badge: '1-Tap PWA',
-    },
-    {
-      id: 'desktop' as PlatformType,
-      label: 'Web Edition',
-      icon: <Globe size={18} />,
+      badge: 'Home Screen PWA',
     },
   ];
 
@@ -86,12 +79,12 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
         {/* Platform Selector Tabs */}
         <TabGroup
           tabs={tabs}
-          activeTab={selectedPlatform}
+          activeTab={selectedPlatform === 'desktop' ? 'android' : selectedPlatform}
           onChange={onPlatformChange}
         />
 
         {/* Tab 1: Android APK */}
-        {selectedPlatform === 'android' && (
+        {(selectedPlatform === 'android' || selectedPlatform === 'desktop') && (
           <GlassCard className="download-card">
             <div className="download-card-grid">
               {/* Left Column: Actions */}
@@ -115,7 +108,7 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
                     download="horizon-release.apk"
                     className="btn btn-primary btn-lg"
                   >
-                    <Download size={20} />
+                    <Download size={18} />
                     <span>Download APK ({APP_METADATA.apkSize})</span>
                   </a>
 
@@ -124,7 +117,7 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
                     className="btn btn-secondary btn-lg"
                     title="Scan QR Code from your phone"
                   >
-                    <QrCode size={20} />
+                    <QrCode size={18} />
                     <span>Scan QR</span>
                   </button>
                 </div>
@@ -158,31 +151,33 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
                     <span className="info-val">Android 8.0+ (API 26+)</span>
                   </div>
                   <div className="info-row">
-                    <span className="info-label">Release Date</span>
-                    <span className="info-val">{APP_METADATA.releaseDate}</span>
+                    <span className="info-label">Architecture</span>
+                    <span className="info-val">Universal (ARM64, v7a, x86_64)</span>
                   </div>
 
-                  {/* SHA-256 Checksum with Copy */}
+                  {/* Cryptographic SHA-256 Checksum */}
                   <div className="checksum-box">
                     <div className="checksum-header">
-                      <span className="checksum-title">SHA-256 CHECKSUM</span>
+                      <span className="checksum-title">SHA-256 Checksum</span>
                       <button
                         onClick={() => onCopyChecksum(APP_METADATA.apkChecksum)}
                         className="copy-btn"
-                        title="Copy SHA-256 Checksum"
+                        title="Copy checksum to clipboard"
                       >
                         {copiedChecksum ? (
-                          <span className="inline-flex items-center text-sage">
-                            <Check size={13} /> Copied
+                          <span className="flex items-center gap-1 text-sage">
+                            <Check size={12} /> Copied
                           </span>
                         ) : (
-                          <span className="inline-flex items-center">
-                            <Copy size={13} /> Copy
+                          <span className="flex items-center gap-1">
+                            <Copy size={12} /> Copy
                           </span>
                         )}
                       </button>
                     </div>
-                    <code className="checksum-code">{APP_METADATA.apkChecksum}</code>
+                    <code className="checksum-code">
+                      {APP_METADATA.apkChecksum.slice(0, 32)}...
+                    </code>
                   </div>
                 </div>
               </div>
@@ -194,41 +189,26 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
         {selectedPlatform === 'ios' && (
           <GlassCard className="download-card">
             <div className="ios-pwa-grid">
-              <div className="ios-header-col">
-                <div className="download-badge-group">
-                  <span className="platform-tag ios-tag">
-                    <Apple size={14} /> Apple iOS / iPadOS
-                  </span>
-                  <span className="meta-tag">Instant PWA • No Sideloading</span>
-                </div>
-
-                <h3 className="download-heading">Install Horizon on iPhone in 1 Tap</h3>
-                <p className="download-desc">
-                  Thanks to modern Progressive Web App (PWA) standards, you can install Horizon directly to your iOS Home Screen without developer certificates, AltStore, or TestFlight restrictions.
-                </p>
-
-                <div className="download-btn-row">
-                  <a
-                    href={APP_METADATA.pwaUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-primary btn-lg"
-                  >
-                    <ExternalLink size={18} />
-                    <span>Open in Safari & Install</span>
-                  </a>
-                </div>
+              <div className="download-badge-group">
+                <span className="platform-tag ios-tag">
+                  <Apple size={14} /> Apple iOS / iPadOS
+                </span>
+                <span className="meta-tag">Safari Progressive Web App</span>
               </div>
 
-              {/* iOS Step-by-Step Visual Cards */}
+              <h3 className="download-heading">Add Horizon to Your iPhone / iPad</h3>
+              <p className="download-desc">
+                No App Store account or side-loading required. Install Horizon directly as a native standalone PWA on iOS 16.4+ in three simple steps:
+              </p>
+
               <div className="ios-steps-container">
                 <div className="ios-step-card">
                   <div className="ios-step-icon">
-                    <Globe size={22} className="text-gold" />
+                    <Apple size={22} className="text-gold" />
                   </div>
                   <div className="ios-step-num">Step 1</div>
                   <h4 className="ios-step-name">Open in Safari</h4>
-                  <p className="ios-step-text">Navigate to Horizon Web in Safari on your iPhone or iPad.</p>
+                  <p className="ios-step-text">Navigate to Horizon on your iPhone or iPad using the default Safari browser.</p>
                 </div>
 
                 <div className="ios-step-card">
@@ -236,7 +216,7 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
                     <Share size={22} className="text-cyan" />
                   </div>
                   <div className="ios-step-num">Step 2</div>
-                  <h4 className="ios-step-name">Tap Share Icon</h4>
+                  <h4 className="ios-step-name">Tap Share Button</h4>
                   <p className="ios-step-text">Tap the standard iOS Share square icon at the bottom of the screen.</p>
                 </div>
 
@@ -248,37 +228,6 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
                   <h4 className="ios-step-name">Add to Home Screen</h4>
                   <p className="ios-step-text">Select "Add to Home Screen". Horizon will launch full-screen with offline support.</p>
                 </div>
-              </div>
-            </div>
-          </GlassCard>
-        )}
-
-        {/* Tab 3: Web Edition */}
-        {selectedPlatform === 'desktop' && (
-          <GlassCard className="download-card">
-            <div className="web-edition-box">
-              <div className="download-badge-group">
-                <span className="platform-tag web-tag">
-                  <Globe size={14} /> Full Web Companion
-                </span>
-                <span className="meta-tag">Chrome • Safari • Firefox • Edge</span>
-              </div>
-
-              <h3 className="download-heading">Horizon Web Edition</h3>
-              <p className="download-desc max-w-xl">
-                Run Horizon directly in your browser with zero downloads. Full support for keyboard shortcuts, offline caching, and responsive high-contrast layouts.
-              </p>
-
-              <div className="download-btn-row justify-center">
-                <a
-                  href={APP_METADATA.pwaUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-primary btn-lg"
-                >
-                  <ExternalLink size={20} />
-                  <span>Launch Web App (Port 8080)</span>
-                </a>
               </div>
             </div>
           </GlassCard>

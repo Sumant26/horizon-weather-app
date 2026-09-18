@@ -1,19 +1,17 @@
 /* ==========================================================================
-   HORIZON WEATHER — COZY EDITORIAL ATMOSPHERIC DESIGN SYSTEM
-   Derived from Flutter AppColors (Warm Roasted Espresso, Soft Linen, Honey Gold)
+   HORIZON WEATHER — DEEP DARK COZY ATMOSPHERIC DESIGN SYSTEM
+   High-Contrast Velvet Obsidian, Soft Ivory Linen, Honey Gold & Amber
    ========================================================================== */
 
 :root {
-  /* Cozy Atmosphere Palette from Flutter AppColors */
-  --bg-cozy-dark: #140d09; /* Deep rich roasted ground */
-  --bg-cozy-espresso: #22160e; /* Cozy dark roasted espresso */
-  --bg-cozy-dusk: #382315; /* Warm honey-amber dusk */
-  --bg-surface: #1c1612; /* Warm cozy card surface */
-  --bg-card: #201b17; /* Cozy warm card (AppColors.cardDecoration) */
-  --bg-card-hover: #2c241e;
-  --bg-glass: rgba(32, 27, 23, 0.78);
-  --border-glass: rgba(246, 173, 85, 0.14);
-  --border-glass-hover: rgba(246, 173, 85, 0.38);
+  /* Deep Dark Velvet Obsidian Base */
+  --bg-dark: #080b11;
+  --bg-surface: #0e131e;
+  --bg-card: #131a28;
+  --bg-card-hover: #182132;
+  --bg-glass: rgba(19, 26, 40, 0.78);
+  --border-glass: rgba(246, 173, 85, 0.15);
+  --border-glass-hover: rgba(246, 173, 85, 0.40);
 
   /* Accents & Highlights from Flutter AppColors */
   --accent-gold: #f6ad55; /* AppColors.honeyGold */
@@ -23,7 +21,7 @@
   --accent-cyan: #81e6d9; /* AppColors.twilightCyan */
   --accent-icy: #38bdf8; /* AppColors.icyCyan */
 
-  /* Typography Tokens from Flutter AppColors */
+  /* Typography Tokens */
   --text-primary: #faf6f0; /* AppColors.softLinen (Warm ivory linen) */
   --text-secondary: #c4b5a5; /* Warm muted stone */
   --text-muted: #8c7a6b; /* Warm soft slate */
@@ -47,11 +45,11 @@
 html {
   scroll-behavior: smooth;
   color-scheme: dark;
-  background-color: var(--bg-cozy-dark);
+  background-color: var(--bg-dark);
 }
 
 body {
-  background-color: var(--bg-cozy-dark);
+  background-color: var(--bg-dark);
   color: var(--text-primary);
   font-family: var(--font-body);
   line-height: 1.65;
@@ -60,15 +58,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Atmospheric Cozy Glow Background */
+/* Atmospheric Dark Glow Background */
 .app-container {
   min-height: 100vh;
   position: relative;
   background:
-    radial-gradient(circle at 50% -5%, rgba(246, 173, 85, 0.09) 0%, transparent 55%),
+    radial-gradient(circle at 50% -8%, rgba(246, 173, 85, 0.10) 0%, transparent 55%),
     radial-gradient(circle at 10% 45%, rgba(237, 137, 54, 0.05) 0%, transparent 45%),
     radial-gradient(circle at 90% 80%, rgba(246, 173, 85, 0.04) 0%, transparent 45%),
-    linear-gradient(180deg, #1f150e 0%, #140d09 35%, #0e0906 100%);
+    linear-gradient(180deg, #101622 0%, #080b11 35%, #05070a 100%);
 }
 
 /* Typography & Gradients */
@@ -128,14 +126,14 @@ h1, h2, h3, h4, .font-display {
   border-radius: var(--radius-lg);
   padding: 28px;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.6);
 }
 
 .glass-card.hoverable:hover {
   background: var(--bg-card-hover);
   border-color: var(--border-glass-hover);
   transform: translateY(-3px);
-  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.6), 0 0 24px -6px rgba(246, 173, 85, 0.16);
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 0 0 24px -6px rgba(246, 173, 85, 0.18);
 }
 
 /* Badges */
@@ -194,7 +192,7 @@ h1, h2, h3, h4, .font-display {
 
 .btn-primary {
   background: linear-gradient(135deg, #f6ad55 0%, #ed8936 100%);
-  color: #140d09;
+  color: #080b11;
   box-shadow: 0 4px 18px rgba(246, 173, 85, 0.25);
 }
 
@@ -260,7 +258,7 @@ h1, h2, h3, h4, .font-display {
   z-index: 50;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  background: rgba(20, 13, 9, 0.85);
+  background: rgba(8, 11, 17, 0.88);
   border-bottom: 1px solid var(--border-glass);
 }
 
@@ -415,9 +413,9 @@ h1, h2, h3, h4, .font-display {
 .hero-mockup-card {
   padding: 30px;
   border-radius: var(--radius-xl);
-  background: radial-gradient(circle at 50% 0%, rgba(246, 173, 85, 0.14) 0%, rgba(32, 27, 23, 0.94) 75%);
+  background: radial-gradient(circle at 50% 0%, rgba(246, 173, 85, 0.14) 0%, rgba(19, 26, 40, 0.94) 75%);
   border: 1px solid rgba(246, 173, 85, 0.25);
-  box-shadow: 0 24px 50px -15px rgba(0, 0, 0, 0.7), 0 0 35px -8px rgba(246, 173, 85, 0.12);
+  box-shadow: 0 24px 50px -15px rgba(0, 0, 0, 0.85), 0 0 35px -8px rgba(246, 173, 85, 0.15);
 }
 
 .mockup-header {
@@ -697,12 +695,6 @@ h1, h2, h3, h4, .font-display {
   border: 1px solid rgba(129, 230, 217, 0.28);
 }
 
-.web-tag {
-  background: rgba(246, 173, 85, 0.12);
-  color: var(--accent-gold);
-  border: 1px solid rgba(246, 173, 85, 0.28);
-}
-
 .meta-tag {
   font-size: 0.78rem;
   color: var(--text-muted);
@@ -722,12 +714,6 @@ h1, h2, h3, h4, .font-display {
   margin-bottom: 24px;
 }
 
-.download-desc.max-w-xl {
-  max-width: 580px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .download-btn-row {
   display: flex;
   align-items: center;
@@ -736,16 +722,12 @@ h1, h2, h3, h4, .font-display {
   flex-wrap: wrap;
 }
 
-.download-btn-row.justify-center {
-  justify-content: center;
-}
-
 .download-side-col {
   height: 100%;
 }
 
 .info-box {
-  background: rgba(20, 13, 9, 0.65);
+  background: rgba(8, 11, 17, 0.75);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
   padding: 22px;
@@ -817,7 +799,7 @@ h1, h2, h3, h4, .font-display {
   font-family: var(--font-mono);
   font-size: 0.7rem;
   color: var(--text-secondary);
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.45);
   padding: 8px;
   border-radius: 6px;
   word-break: break-all;
@@ -838,7 +820,7 @@ h1, h2, h3, h4, .font-display {
 }
 
 .ios-step-card {
-  background: rgba(20, 13, 9, 0.55);
+  background: rgba(8, 11, 17, 0.65);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
   padding: 18px;
@@ -878,22 +860,13 @@ h1, h2, h3, h4, .font-display {
   line-height: 1.5;
 }
 
-/* Web Edition Box */
-.web-edition-box {
-  text-align: center;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 /* ==========================================================================
    MODAL & SIDELOAD GUIDE
    ========================================================================== */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(10, 6, 4, 0.82);
+  background: rgba(4, 6, 9, 0.85);
   backdrop-filter: blur(12px);
   z-index: 100;
   display: flex;
@@ -903,12 +876,12 @@ h1, h2, h3, h4, .font-display {
 }
 
 .modal-container {
-  background: #1c1612;
+  background: #0e131e;
   border: 1px solid rgba(246, 173, 85, 0.22);
   border-radius: var(--radius-lg);
   width: 100%;
   max-width: 580px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.95);
   overflow: hidden;
   animation: modalIn 0.25s ease-out forwards;
 }
@@ -1016,7 +989,7 @@ h1, h2, h3, h4, .font-display {
   background: #ffffff;
   border-radius: var(--radius-md);
   margin-bottom: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
 }
 
 .qr-desc {
@@ -1030,7 +1003,7 @@ h1, h2, h3, h4, .font-display {
    ========================================================================== */
 .footer-container {
   border-top: 1px solid var(--border-glass);
-  background: rgba(14, 9, 6, 0.95);
+  background: rgba(6, 8, 13, 0.96);
   padding: 60px 24px 30px;
 }
 

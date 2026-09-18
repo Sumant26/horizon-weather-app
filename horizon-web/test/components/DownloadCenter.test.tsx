@@ -66,7 +66,7 @@ describe('DownloadCenter Component', () => {
       />,
     );
 
-    expect(screen.getByText(/Install Horizon on iPhone in 1 Tap/i)).toBeInTheDocument();
+    expect(screen.getByText(/Add Horizon to Your iPhone/i)).toBeInTheDocument();
     expect(screen.getByText('Open in Safari')).toBeInTheDocument();
     expect(screen.getByText('Add to Home Screen')).toBeInTheDocument();
   });

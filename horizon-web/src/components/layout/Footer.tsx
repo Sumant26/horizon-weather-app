@@ -42,7 +42,6 @@ export const Footer: React.FC = () => {
               <li><a href="#features">Core Philosophy</a></li>
               <li><a href="#download">Download Android APK</a></li>
               <li><a href="#download">iOS PWA Guide</a></li>
-              <li><a href={APP_METADATA.pwaUrl} target="_blank" rel="noopener noreferrer">Launch Web Edition</a></li>
               <li>
                 <a
                   href={APP_METADATA.githubUrl}

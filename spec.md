@@ -1,6 +1,6 @@
 # Technical Specification: Horizon Weather App & Horizon Web
 
-**Document Version:** 1.0.0  
+**Document Version:** 1.1.0  
 **Status:** Approved / Active  
 **Author:** Horizon Engineering & Design Team  
 **Date:** September 2026  
@@ -21,7 +21,7 @@ Rather than overwhelming the user with dense numerical tables and cluttered sate
 
 The ecosystem comprises two primary deliverables:
 - **Horizon Mobile App**: A native, zero-dependency Flutter application built for Android and iOS.
-- **Horizon Web (`horizon-web`)**: A high-performance React + TypeScript + Vite companion showcase, live preview client, and multi-channel distribution center.
+- **Horizon Web (`horizon-web`)**: A high-performance React + TypeScript + Vite companion showcase and distribution center for Android APK sideloading and iOS PWA installation.
 
 ---
 
@@ -43,18 +43,35 @@ The ecosystem comprises two primary deliverables:
 |       Horizon Mobile Client (Flutter)    |                     |        Horizon Web Companion (React)     |
 |                                          |                     |                                          |
 |  - Domain: Business Models & Rules       |                     |  - Showcase & Live Interactive Preview   |
-|  - State: ValueNotifier + Sealed States  |                     |  - Multi-Platform Download Center        |
+|  - State: ValueNotifier + Sealed States  |                     |  - Direct Distribution Center            |
 |  - Presentation: Procedural Gradient UI  |                     |  - Dynamic QR Code APK Sideload & SHA-256|
-|  - Engine: Kinetic Typography System     |                     |  - iOS PWA Home Screen Installation      |
+|  - Engine: Kinetic Typography System     |                     |  - iOS PWA Home Screen Installation Guide|
 +------------------------------------------+                     +------------------------------------------+
+                                    \                                                 /
+                                     \                                               /
+                                      +----------------------+----------------------+
+                                                             |
+                                                             v
+                                              +------------------------------+
+                                              |       CI/CD & Git Hooks      |
+                                              |  - Husky Pre-Commit Gates    |
+                                              |  - GitHub Actions Workflows  |
+                                              +------------------------------+
 ```
 
 ### Directory Organization
 ```
 horizon_weather_app/
+├── .github/
+│   └── workflows/
+│       ├── ci.yml                   # Unified GitHub Actions CI Pipeline
+│       └── deploy-web.yml           # Web Build & Package Pipeline
+├── .husky/
+│   └── pre-commit                   # Monorepo pre-commit quality gate (Dart & Web)
+│
 ├── lib/                             # Native Flutter Application
 │   ├── core/                        # Cross-cutting concerns: themes, constants, utilities, loggers
-│   │   ├── constants/               # Color tokens, typography scales, layout dimensions
+│   │   ├── constants/               # AppColors, typography scales, layout dimensions
 │   │   └── utils/                   # AppLogger, date formatters, unit converters
 │   ├── data/                        # Data Layer
 │   │   ├── datasources/             # Remote API clients and local cache adapters
@@ -73,10 +90,10 @@ horizon_weather_app/
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── layout/              # Navbar, Footer
-│   │   │   ├── sections/            # HeroSection, FeaturesShowcase, DownloadCenter, Specs, FAQ
+│   │   │   ├── sections/            # HeroSection, FeaturesShowcase, DownloadCenter
 │   │   │   └── ui/                  # SideloadGuideModal, QR Generator, Badges
-│   │   ├── core/constants/          # Metadata, color tokens, typography
-│   │   ├── domain/                  # TypeScript interfaces and weather contracts
+│   │   ├── core/constants/          # Metadata, deep dark color tokens, typography
+│   │   ├── domain/                  # TypeScript interfaces and feature contracts
 │   │   └── state/                   # UI state hooks and download tracking
 │   ├── package.json                 # Web build scripts & dependencies
 │   ├── tsconfig.json                # TypeScript compiler configuration
@@ -177,11 +194,6 @@ final class WeatherError extends WeatherState {
 }
 ```
 
-#### State Lifecycle Rules:
-- **Zero Full-Tree Rebuilds**: Rebuild scopes are localized to `ValueListenableBuilder` nodes.
-- **Predictable Transitions**: `Initial` $\to$ `Loading` $\to$ `Loaded` (or `Error`).
-- **Resource Cleanup**: All controllers, timers, and notifiers are deterministically disposed of in the State widget lifecycle.
-
 ---
 
 ### 3.3 Dynamic Visual Engine & Kinetic Typography
@@ -191,11 +203,11 @@ The screen background transitions smoothly over 700ms using `AnimatedContainer` 
 
 | Condition | Top Color | Bottom Color | Aesthetic Rationale |
 |---|---|---|---|
-| **Clear Day** | `#16161D` | `#0D0D11` | Deep warm charcoal with high-contrast amber glyphs |
-| **Clear Night** | `#090D14` | `#141A24` | Midnight navy gradient evoking astronomical depth |
-| **Rainy** | `#2C353F` | `#181F25` | Atmospheric storm grey with cool cyan accents |
-| **Overcast** | `#2E3138` | `#1C1E22` | Muted flat slate minimizing visual glare |
-| **Extreme Heat** | `#C85A32` | `#7A2A1E` | Ember red gradient highlighting thermal stress |
+| **Clear Day** | `#382315` | `#140D09` | Warm honey-amber dusk fading to deep roasted espresso |
+| **Clear Night** | `#0F1B2E` | `#060910` | Midnight celestial indigo fading to velvet obsidian |
+| **Rainy** | `#1B2B38` | `#0B1015` | Atmospheric slate teal fading to flannel charcoal |
+| **Overcast** | `#282E37` | `#101317` | Muted heather mist fading to flannel grey |
+| **Extreme Heat** | `#4D2012` | `#180A06` | Terracotta hearth fading to rich amber obsidian |
 
 #### Kinetic Typography Rules
 - The primary temperature number dynamically scales its `FontWeight` according to heat intensity:
@@ -209,132 +221,85 @@ The screen background transitions smoothly over 700ms using `AnimatedContainer` 
 ## 4. Detailed Specification: Horizon Web (`horizon-web`)
 
 ### 4.1 Purpose & Role
-`horizon-web` is the web companion and multi-channel distribution portal for the Horizon ecosystem. It serves two distinct purposes:
-1. **Interactive Editorial Showcase**: Demonstrates Horizon's design philosophy, dynamic gradients, and live simulated weather transitions directly in the browser.
-2. **Unified Distribution Center**: Facilitates frictionless app distribution across Android, iOS, and Web without app store friction.
+`horizon-web` is the dark, editorial web companion and multi-platform distribution center for the Horizon ecosystem:
+1. **Interactive Editorial Showcase**: Demonstrates Horizon's design philosophy, high-contrast dark theme, and live glanceable preview.
+2. **Direct App Distribution**: Frictionless installation pathways for Android APK sideloading (with dynamic QR code generator & SHA-256 verification) and iOS PWA Home Screen installation.
 
 ---
 
-### 4.2 Web Architecture & Technology Stack
+### 4.2 Deep Dark Theme & Color System
 
-| Layer | Technology | Purpose |
+| Token | Hex / Value | Description |
 |---|---|---|
-| **Core Framework** | React 18 (`react`, `react-dom`) | Declarative component hierarchy |
-| **Language** | TypeScript (`^5.3.3`) | Strict compile-time typing and contracts |
-| **Build Tooling** | Vite (`^5.1.4`) | Lightning-fast HMR and optimized production chunks |
-| **Iconography** | Lucide React (`^0.344.0`) | Clean, modern line icons matching mobile aesthetics |
-| **QR Code Engine** | `qrcode` (`^1.5.3`) | Client-side dynamic QR generation for direct APK download |
-| **Testing** | Vitest (`^1.3.1`) + JSDOM | Fast unit and component testing |
-| **Styling** | Vanilla CSS Design System | Custom CSS variables, glassmorphism tokens, zero bloat |
+| `--bg-dark` | `#080B11` | Deep midnight velvet obsidian background |
+| `--bg-surface` | `#0E131E` | High-contrast dark container surface |
+| `--bg-card` | `#131A28` | Translucent glassmorphic card base |
+| `--bg-glass` | `rgba(19, 26, 40, 0.78)` | Backdrop-filtered blurred glass |
+| `--border-glass` | `rgba(246, 173, 85, 0.15)` | Honey-gold ambient border |
+| `--accent-gold` | `#F6AD55` | Warm honey-gold accent (`AppColors.honeyGold`) |
+| `--accent-peach` | `#ED8936` | Warm terracotta accent (`AppColors.warmTerracotta`) |
+| `--accent-sage` | `#9AE6B4` | Ambient sage comfort accent (`AppColors.warmSage`) |
+| `--accent-cyan` | `#81E6D9` | Twilight cyan celestial accent (`AppColors.twilightCyan`) |
+| `--text-primary` | `#FAF6F0` | Warm ivory soft linen typography (`AppColors.softLinen`) |
+| `--text-secondary` | `#C4B5A5` | Warm muted stone secondary text |
+| `--text-muted` | `#8C7A6B` | Warm soft slate text |
 
 ---
 
-### 4.3 Web Component Hierarchy & Layout
+### 4.3 Web Component Hierarchy
 
 ```
 App
-├── Navbar (Branding, Navigation Links, Release Badge, GitHub Link)
-├── HeroSection (Editorial Headline, Dynamic Ambient Background, Feature Pills)
-├── FeaturesShowcase (Glanceability, Window Planner, Gear Checklist, Night Sky Clarity)
-├── DownloadCenter (Multi-Channel Distribution Hub)
-│   ├── AndroidSideloadCard (APK Direct Download, Dynamic QR Code, Sideload Modal Trigger)
-│   ├── IosPwaCard (Add to Home Screen 3-step walkthrough)
-│   └── WebEditionCard (Browser Launcher & PWA link)
-├── SideloadGuideModal (Step-by-Step Android Security & Installation Guide)
-├── TechSpecsSection (Architecture specs, package sizes, cryptographic checksums)
-├── FAQSection (Common inquiries regarding permissions, privacy, offline capabilities)
-└── Footer (Release metadata, build number, copyright, repository links)
+├── Navbar (Branding, Philosophy Link, Download Link, GitHub Source Link)
+├── HeroSection (Editorial Headline, Ambient Atmosphere, 3 Glanceable Metric Cards, Live Mockup)
+├── FeaturesShowcase (4 Essential Design Pillars: Delta, Window, Gear, Night Sky)
+├── DownloadCenter (Direct Distribution Hub)
+│   ├── AndroidSideloadCard (Direct APK Download, Dynamic QR Code, Sideload Guide Modal, SHA-256)
+│   └── IosPwaCard (3-step Add to Home Screen visual walkthrough)
+├── SideloadGuideModal (Step-by-Step Android Unknown App Installation Guide)
+└── Footer (Branding, Zero Tracking & Engine badges, Ecosystem Links, Copyright)
 ```
 
 ---
 
-### 4.4 Multi-Channel Distribution Hub
+## 5. Quality Gate: Git Hooks & CI/CD Pipelines
 
-#### 1. Android Direct APK Sideload
-- Direct HTTPS download link pointing to `/downloads/horizon-release.apk`.
-- **Dynamic QR Generator**: Renders a crisp SVG/Canvas QR code allowing mobile users to scan the screen and initiate download on Android devices.
-- **SHA-256 Checksum Badge**: Displays cryptographic integrity hash (`a8f9c1e4d3b2...`) with one-click clipboard copying.
-- **Sideload Guide Modal**: Comprehensive 4-step modal explaining *"Install unknown apps"*, package verification, and permissions.
+### 5.1 Husky Pre-Commit Hook (`.husky/pre-commit`)
+Every local commit triggers an automated pre-commit hook that verifies:
+1. `dart format --set-exit-if-changed .` (Dart formatting)
+2. `flutter analyze` (Zero error & zero warning static analysis)
+3. `flutter test` (Full Flutter automated test suite)
+4. `npm run typecheck` in `horizon-web/` (TypeScript static analysis)
+5. `npm test` in `horizon-web/` (Vitest test suite)
 
-#### 2. iOS Progressive Web App (PWA) Walkthrough
-- Step-by-step visual instruction card:
-  1. Open Safari on iOS.
-  2. Tap the **Share** button in the toolbar.
-  3. Select **"Add to Home Screen"** for full-screen standalone execution.
-
-#### 3. Web Edition
-- Instant launcher accessing the compiled web client (`http://127.0.0.1:8080/` or production domain).
+### 5.2 GitHub Actions CI Pipeline (`.github/workflows/ci.yml`)
+Automated verification on every pull request and push to `main`:
+- **Flutter Verification Job**:
+  - Sets up Java 17 and Flutter stable.
+  - Verifies formatting, runs `flutter analyze` and `flutter test --coverage`.
+  - Builds release APK to guarantee release compilability.
+- **Web Verification Job**:
+  - Sets up Node.js 20 with cached npm dependencies.
+  - Runs `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, and `npm run build`.
+  - Archives and uploads production distribution bundle.
 
 ---
 
-## 5. Non-Functional Requirements (NFRs)
+## 6. Non-Functional Requirements (NFRs)
 
-### 5.1 Performance & Framerate Targets
-- **60 / 120 FPS Framerate**: All UI animations (color gradient transitions, state switches, modal slides) must maintain 60 or 120 FPS with zero dropped frames.
-- **Cold Start Latency**: Flutter application cold launch to interactive display $\le 500\text{ms}$.
-- **Web First Contentful Paint (FCP)**: $\le 0.8\text{s}$ on 4G networks; bundle size $\le 150\text{KB}$ gzipped.
-- **Isolated Repainting**: All custom-painted elements must be enclosed in `RepaintBoundary` widgets.
+### 6.1 Performance & Framerate Targets
+- **60 / 120 FPS Framerate**: All UI animations and background color transitions maintain a steady 60/120 FPS.
+- **Cold Start Latency**: Mobile launch to interactive display $\le 500\text{ms}$.
+- **Web First Contentful Paint (FCP)**: $\le 0.8\text{s}$ on standard connections; gzipped bundle size $\le 150\text{KB}$.
 
-### 5.2 Offline-First Strategy (Cache-Then-Network)
-1. **Instant Snapshot Render**: On application boot, render the last-known cached `WeatherData` immediately from local storage.
-2. **Background Refresh**: Dispatch an asynchronous remote query to update state without UI locking.
+### 6.2 Offline-First Strategy (Cache-Then-Network)
+1. **Instant Cold Launch**: Immediate rendering of the last-known cached `WeatherData` from local storage.
+2. **Background Refresh**: Asynchronous remote query to update state without UI blocking.
 3. **Time-To-Live (TTL)**:
    - Data $< 30\text{ minutes}$ is treated as **Fresh**.
    - Data $\ge 30\text{ minutes}$ is treated as **Stale** (UI shows a subtle status indicator).
-4. **Graceful Network Degradation**: If network requests fail, cached data remains active with a non-blocking error badge.
 
-### 5.3 Security & Privacy Mandates
-- **Zero API Key Leakage**: API tokens or client credentials must never be committed to Git. All configuration is injected via compile-time variables (`--dart-define`).
-- **Cryptographic Checksums**: Web release downloads must publish verified SHA-256 integrity hashes.
-- **Zero Tracker Policy**: Horizon does not collect user telemetry, advertising identifiers, or location histories.
-
-### 5.4 Accessibility (a11y) & Responsiveness
-- **WCAG AA Compliance**: High-contrast typography with minimum contrast ratio $\ge 4.5:1$ across all gradient states.
-- **Dynamic Text Scaling**: Responsive layout containers that gracefully accommodate enlarged system accessibility fonts without clipping or overflow.
-- **Touch Target Sizing**: Minimum interactive touch target area of $48 \times 48\text{ dp}$.
-
----
-
-## 6. Verification & Quality Assurance Standards
-
-### 6.1 Automated Testing Matrix
-
-| Layer | Test Type | Tooling | Target Coverage |
-|---|---|---|---|
-| **Flutter Models** | Unit Tests | `flutter test` | 100% of computed domain getters |
-| **Flutter State** | State Notifier Tests | `flutter test` | All sealed state transition sequences |
-| **Flutter UI** | Widget Tests | `flutter test` | Gradients, layout responsiveness, error banners |
-| **Horizon Web** | Unit & Component Tests | `vitest`, `@testing-library/react` | QR generator, Modal dialogs, theme constants |
-| **Web Typing & Linting** | Static Analysis | `tsc --noEmit`, `eslint` | 0 errors, 0 warnings |
-
-### 6.2 Pre-Commit Verification Workflow
-
-Every commit and pull request must execute and pass the following automated verification suite:
-
-```bash
-# 1. Flutter Code Format Check
-dart format --set-exit-if-changed .
-
-# 2. Flutter Static Analysis (Strict 0 warning mandate)
-flutter analyze
-
-# 3. Flutter Test Suite
-flutter test --coverage
-
-# 4. Horizon Web Lint & Typecheck
-cd horizon-web
-npm run typecheck
-npm run lint
-npm test
-```
-
----
-
-## 7. Future Capability Roadmap
-
-Refer to [AGENTS.md](AGENTS.md) Section 2 for complete expansion details:
-1. **Live Open-Meteo REST API & Historical Delta Mapping**: Replacing mock repositories with live Open-Meteo queries and yesterday-delta archive calculations.
-2. **Live GPS Geolocation & Multi-Location Paging**: Auto coordinate detection (`geolocator`), reverse geocoding (`geocoding`), and horizontal swiping across saved microclimates.
-3. **Air Quality Index (AQI) Integration**: Real-time PM2.5, PM10, and Ozone metrics with actionable health insights.
-4. **Celestial Sun/Moon Astronomical Path**: Interactive celestial arc depicting golden hour, blue hour, and lunar cycles.
-5. **Atmospheric Canvas Particle Shaders**: Isolated `CustomPainter` layers for ambient rain streaks, mist, and night-sky star fields.
+### 6.3 Security & Privacy Mandates
+- **Zero API Secret Commits**: Sensitive credentials are never committed to version control.
+- **Cryptographic Verification**: Published APK releases include verified SHA-256 integrity hashes.
+- **Zero Tracker Policy**: No telemetry, analytics trackers, or location history logging.

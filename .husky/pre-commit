@@ -1,0 +1,42 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🛡️ Running Horizon Monorepo Pre-Commit Quality Gate..."
+
+# 1. Dart Formatting
+echo "🔍 Checking Dart formatting..."
+dart format --set-exit-if-changed . || {
+  echo "❌ Dart code formatting check failed. Run 'dart format .' to format code."
+  exit 1
+}
+
+# 2. Flutter Static Analysis
+echo "🔍 Running flutter analyze..."
+flutter analyze || {
+  echo "❌ flutter analyze reported issues."
+  exit 1
+}
+
+# 3. Flutter Automated Test Suite
+echo "🧪 Running flutter test..."
+flutter test || {
+  echo "❌ flutter test suite failed."
+  exit 1
+}
+
+# 4. Horizon Web Suite
+if [ -d "horizon-web" ]; then
+  echo "🌐 Running Horizon Web checks..."
+  cd horizon-web || exit 1
+  npm run typecheck || {
+    echo "❌ TypeScript typecheck failed in horizon-web."
+    exit 1
+  }
+  npm test || {
+    echo "❌ Vitest test suite failed in horizon-web."
+    exit 1
+  }
+  cd ..
+fi
+
+echo "✅ All Horizon pre-commit quality checks passed successfully!"

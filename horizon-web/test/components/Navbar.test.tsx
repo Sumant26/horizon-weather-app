@@ -16,7 +16,7 @@ describe('Navbar Component', () => {
 
     expect(screen.getByText('HORIZON')).toBeInTheDocument();
     expect(screen.getByText('Get App')).toBeInTheDocument();
-    expect(screen.getByText('Launch Web')).toBeInTheDocument();
+    expect(screen.getByText('Source')).toBeInTheDocument();
   });
 
   it('triggers callback when clicking Get App button', () => {
