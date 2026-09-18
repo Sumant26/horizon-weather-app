@@ -2,32 +2,28 @@ import React from 'react';
 import {
   History,
   Activity,
-  HeartPulse,
+  CheckCircle2,
   MoonStar,
-  Headphones,
-  Palette,
 } from 'lucide-react';
 import { FEATURE_PILLARS, FeaturePillar } from '../../domain/data/features';
 import { GlassCard } from '../ui/GlassCard';
 import { Badge } from '../ui/Badge';
 
 const ICON_MAP: Record<string, React.ReactNode> = {
-  History: <History size={22} />,
-  Activity: <Activity size={22} />,
-  HeartPulse: <HeartPulse size={22} />,
-  MoonStar: <MoonStar size={22} />,
-  Headphones: <Headphones size={22} />,
-  Palette: <Palette size={22} />,
+  History: <History size={20} />,
+  Activity: <Activity size={20} />,
+  CheckCircle2: <CheckCircle2 size={20} />,
+  MoonStar: <MoonStar size={20} />,
 };
 
 export const FeaturesShowcase: React.FC = () => {
   return (
     <section id="features" className="section-container">
       <div className="section-header">
-        <Badge variant="cyan">CORE PHILOSOPHY</Badge>
-        <h2 className="section-title">Engineered for Human Perception</h2>
+        <Badge variant="gold">DESIGN PHILOSOPHY</Badge>
+        <h2 className="section-title">Built for Human Comfort</h2>
         <p className="section-subtitle">
-          Six foundational capabilities designed from the ground up to replace sensory overload with effortless clarity.
+          Four quiet, thoughtful insights designed to give you clarity at a glance without clutter or anxiety.
         </p>
       </div>
 
@@ -37,7 +33,11 @@ export const FeaturesShowcase: React.FC = () => {
             <div className="feature-card-top">
               <div
                 className="feature-icon-box"
-                style={{ color: pillar.accentColor, backgroundColor: `${pillar.accentColor}18` }}
+                style={{
+                  color: pillar.accentColor,
+                  backgroundColor: `${pillar.accentColor}18`,
+                  borderColor: `${pillar.accentColor}33`,
+                }}
               >
                 {ICON_MAP[pillar.iconName]}
               </div>

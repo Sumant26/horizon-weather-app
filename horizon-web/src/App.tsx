@@ -4,8 +4,6 @@ import { Footer } from './components/layout/Footer';
 import { HeroSection } from './components/sections/HeroSection';
 import { FeaturesShowcase } from './components/sections/FeaturesShowcase';
 import { DownloadCenter } from './components/sections/DownloadCenter';
-import { TechSpecsSection } from './components/sections/TechSpecsSection';
-import { FAQSection } from './components/sections/FAQSection';
 import { useDownloadState } from './state/useDownloadStore';
 
 export const App: React.FC = () => {
@@ -27,25 +25,24 @@ export const App: React.FC = () => {
 
   return (
     <div className="app-container">
-      {/* Top Navigation */}
+      {/* Top Cozy Navigation */}
       <Navbar
         onScrollToDownload={() => scrollTo('download')}
         onScrollToFeatures={() => scrollTo('features')}
-        onScrollToSpecs={() => scrollTo('specs')}
       />
 
       {/* Main Showcase & Storytelling */}
       <main>
-        {/* 1. Hero */}
+        {/* 1. Cozy Hero Section */}
         <HeroSection
           onDownloadClick={() => scrollTo('download')}
           onExploreFeatures={() => scrollTo('features')}
         />
 
-        {/* 2. Core 6 Feature Pillars */}
+        {/* 2. Core 4 Design Pillars */}
         <FeaturesShowcase />
 
-        {/* 3. Distribution & Download Center */}
+        {/* 3. Streamlined Download Center */}
         <DownloadCenter
           selectedPlatform={selectedPlatform}
           onPlatformChange={setSelectedPlatform}
@@ -55,12 +52,6 @@ export const App: React.FC = () => {
           copiedChecksum={copiedChecksum}
           onCopyChecksum={handleCopyChecksum}
         />
-
-        {/* 4. Tech Specs & Architecture */}
-        <TechSpecsSection />
-
-        {/* 5. Frequently Asked Questions */}
-        <FAQSection />
       </main>
 
       {/* Footer */}

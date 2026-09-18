@@ -14,16 +14,27 @@ export const APP_METADATA = {
 };
 
 export const COLOR_TOKENS = {
-  bgOled: '#080a0e',
-  bgSurface: '#121620',
-  bgCard: '#181e2b',
-  bgGlass: 'rgba(24, 30, 43, 0.75)',
-  accentGold: '#E6A23C',
-  accentPeach: '#E68A6C',
-  accentCyan: '#4ED8E6',
-  accentSage: '#8BC34A',
-  textPrimary: '#F5F5F7',
-  textSecondary: '#A0AEC0',
-  textMuted: '#64748B',
-  borderGlass: 'rgba(255, 255, 255, 0.08)',
+  // Cozy Atmosphere Palette from Flutter AppColors
+  bgCozyDark: '#140D09', // Deep rich roasted ground
+  bgCozyEspresso: '#22160E', // Cozy dark roasted espresso
+  bgCozyDusk: '#382315', // Warm honey-amber dusk
+  bgSurface: '#1C1612', // Warm cozy card surface
+  bgCard: '#201B17', // Cozy warm card (AppColors.cardDecoration)
+  bgGlass: 'rgba(32, 27, 23, 0.78)', // Warm translucent glass
+  borderGlass: 'rgba(246, 173, 85, 0.16)', // Subtle honey-gold border
+  borderGlassHover: 'rgba(246, 173, 85, 0.38)',
+
+  // AppColors Accents & Highlights
+  accentGold: '#F6AD55', // AppColors.honeyGold
+  accentAmber: '#FBD38D', // AppColors.softAmber
+  accentPeach: '#ED8936', // AppColors.warmTerracotta
+  accentSage: '#9AE6B4', // AppColors.warmSage
+  accentCyan: '#81E6D9', // AppColors.twilightCyan
+  accentIcyCyan: '#38BDF8', // AppColors.icyCyan
+
+  // Typography Tokens
+  textPrimary: '#FAF6F0', // AppColors.softLinen (Warm ivory linen)
+  textSecondary: '#C4B5A5', // Warm muted stone
+  textMuted: '#8C7A6B', // Warm soft slate
 };
+

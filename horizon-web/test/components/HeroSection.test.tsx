@@ -14,9 +14,9 @@ describe('HeroSection Component', () => {
       />,
     );
 
-    expect(screen.getByText(/Weather for/i)).toBeInTheDocument();
+    expect(screen.getByText(/weather clarity/i)).toBeInTheDocument();
     expect(screen.getByText('-2.8° Cooler')).toBeInTheDocument();
-    expect(screen.getByText('07:00 - 09:00 AM • High Comfort (Score 94)')).toBeInTheDocument();
+    expect(screen.getByText(/07:00 – 09:00 AM/i)).toBeInTheDocument();
   });
 
   it('triggers download button click', () => {
@@ -30,7 +30,7 @@ describe('HeroSection Component', () => {
       />,
     );
 
-    fireEvent.click(screen.getByText('Download for Android / iOS'));
+    fireEvent.click(screen.getByText('Get Horizon App'));
     expect(onDownload).toHaveBeenCalledTimes(1);
   });
 });

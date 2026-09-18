@@ -5,13 +5,11 @@ import { APP_METADATA } from '../../core/constants/theme';
 interface NavbarProps {
   onScrollToDownload: () => void;
   onScrollToFeatures: () => void;
-  onScrollToSpecs: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   onScrollToDownload,
   onScrollToFeatures,
-  onScrollToSpecs,
 }) => {
   return (
     <header className="navbar-container">
@@ -22,8 +20,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             src="/assets/app_logo.jpg"
             alt="Horizon Logo"
             className="navbar-logo"
-            width={36}
-            height={36}
+            width={34}
+            height={34}
           />
           <div className="navbar-title-group">
             <span className="navbar-title">HORIZON</span>
@@ -34,10 +32,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Links */}
         <nav className="navbar-nav">
           <button onClick={onScrollToFeatures} className="nav-link">
-            Features
+            Philosophy
           </button>
-          <button onClick={onScrollToSpecs} className="nav-link">
-            Architecture
+          <button onClick={onScrollToDownload} className="nav-link">
+            Download
           </button>
           <a
             href={APP_METADATA.githubUrl}
@@ -57,11 +55,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             rel="noopener noreferrer"
             className="btn btn-ghost"
           >
-            <Sparkles size={16} />
-            <span>Launch Web App</span>
+            <Sparkles size={15} />
+            <span>Launch Web</span>
           </a>
           <button onClick={onScrollToDownload} className="btn btn-primary">
-            <Download size={16} />
+            <Download size={15} />
             <span>Get App</span>
           </button>
         </div>

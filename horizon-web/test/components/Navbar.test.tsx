@@ -6,31 +6,27 @@ describe('Navbar Component', () => {
   it('renders branding title and action buttons', () => {
     const onDownload = vi.fn();
     const onFeatures = vi.fn();
-    const onSpecs = vi.fn();
 
     render(
       <Navbar
         onScrollToDownload={onDownload}
         onScrollToFeatures={onFeatures}
-        onScrollToSpecs={onSpecs}
       />,
     );
 
     expect(screen.getByText('HORIZON')).toBeInTheDocument();
     expect(screen.getByText('Get App')).toBeInTheDocument();
-    expect(screen.getByText('Launch Web App')).toBeInTheDocument();
+    expect(screen.getByText('Launch Web')).toBeInTheDocument();
   });
 
   it('triggers callback when clicking Get App button', () => {
     const onDownload = vi.fn();
     const onFeatures = vi.fn();
-    const onSpecs = vi.fn();
 
     render(
       <Navbar
         onScrollToDownload={onDownload}
         onScrollToFeatures={onFeatures}
-        onScrollToSpecs={onSpecs}
       />,
     );
 
