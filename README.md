@@ -1,6 +1,6 @@
 # Horizon — Weather for Humans, Not Meteorologists
 
-> A minimalist, high-contrast, editorial weather intelligence ecosystem crafted for instant glanceability — featuring a native Flutter mobile client and a dark, modern React web companion styled with the **Twilight Heather** palette.
+> A minimalist, high-contrast, editorial weather intelligence ecosystem crafted for instant glanceability — featuring a native Flutter mobile client and a bespoke, matte dark React web companion.
 
 [![Horizon CI Pipeline](https://github.com/Sumant26/horizon-weather-app/actions/workflows/ci.yml/badge.svg)](https://github.com/Sumant26/horizon-weather-app/actions/workflows/ci.yml)
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter)](https://flutter.dev)
@@ -48,14 +48,14 @@ horizon_weather_app/
 │       ├── screens/                 # HomeScreen & layout compositions
 │       └── state/                   # Sealed WeatherState & WeatherNotifier
 │
-├── horizon-web/                     # React + TypeScript Web Companion (Twilight Heather Theme)
+├── horizon-web/                     # React + TypeScript Web Companion (Matte Dark Theme)
 │   ├── public/                      # Static assets, release APKs, manifest.json
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── layout/              # Navbar, Footer
 │   │   │   ├── sections/            # HeroSection, FeaturesShowcase, DownloadCenter
 │   │   │   └── ui/                  # SideloadGuideModal, QR Generator, Badges
-│   │   ├── core/constants/          # Metadata, Twilight Heather tokens, typography
+│   │   ├── core/constants/          # Metadata, Matte Dark tokens, typography
 │   │   ├── domain/                  # TypeScript interfaces and feature contracts
 │   │   └── state/                   # UI state hooks and download tracking
 │   ├── package.json                 # Web build scripts & dependencies
@@ -86,13 +86,13 @@ horizon_weather_app/
 
 ## 2. Horizon Web (`horizon-web`)
 
-**Horizon Web** is styled with the **Twilight Heather** aesthetic — deep celestial obsidian with calming lavender and starlight cyan highlights:
+**Horizon Web** is crafted with an authentic, matte dark editorial aesthetic:
 
-### Web Color System (Twilight Heather)
-- **Celestial Dark Base**: `#080A12` with subtle midnight lavender radial gradients (`rgba(167, 139, 250, 0.10)`).
-- **Primary Accent**: **Soft Heather Lavender** (`#A78BFA` / `#C4B5FD` / `#8B5CF6`).
-- **Secondary Accent**: **Twilight Starlight Cyan** (`#81E6D9`).
-- **Typography**: **Soft Ivory Linen** (`#FAF6F0`) and twilight muted slate (`#B4BED2`).
+### Web Color System (Matte Dark Editorial)
+- **Deep Matte Ground**: `#060608` with subtle vignette depth.
+- **Tactile Matte Ivory Button**: Solid bone-ivory `#FAF8F5` with dark text `#060608`.
+- **Understated Natural Accents**: Warm ember delta `#D97757`, muted sage comfort `#7E9F8E`, and muted slate clarity `#8898AA`.
+- **Typography**: Crisp pure white headings (`#FFFFFF`) with soft neutral grey secondary text (`#9E9EA7`).
 
 ### Direct Multi-Platform Distribution
 - **Android APK Direct Sideload**: Download APK directly or scan the dynamic QR code from your phone; includes SHA-256 verification and step-by-step sideload guide.

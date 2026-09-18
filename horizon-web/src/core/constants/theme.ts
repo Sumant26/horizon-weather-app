@@ -1,6 +1,6 @@
 export const APP_METADATA = {
   name: 'Horizon',
-  tagline: 'Weather for Humans, Not Meteorologists',
+  tagline: 'Weather in Context, Not Raw Numbers',
   description:
     'A minimalist, high-contrast editorial weather experience crafted for instant glanceability — highlighting temperature deltas relative to yesterday, optimal outdoor comfort windows, and calming ambient soundscapes.',
   version: 'v1.0.0',
@@ -13,24 +13,23 @@ export const APP_METADATA = {
 };
 
 export const COLOR_TOKENS = {
-  // Deep Celestial Twilight Heather Palette
-  bgDark: '#080a12', // Deep midnight celestial obsidian
-  bgSurface: '#0f1322', // Twilight dark container surface
-  bgCard: '#14182c', // Deep celestial glass card surface
-  bgCardHover: '#1c223d',
-  bgGlass: 'rgba(20, 24, 44, 0.78)', // Translucent twilight glass
-  borderGlass: 'rgba(167, 139, 250, 0.16)', // Subtle heather lavender border
-  borderGlassHover: 'rgba(167, 139, 250, 0.42)',
+  // Pure Matte Dark & Obsidian Base (Bespoke Editorial Atmosphere)
+  bgOled: '#050507', // True deep charcoal-black ground
+  bgSurface: '#0B0B0F', // Elevated dark surface
+  bgCard: '#111116', // Matte frosted card surface
+  bgCardHover: '#16161E',
+  bgGlass: 'rgba(17, 17, 22, 0.88)', // Deep tactile matte glass
+  borderHairline: 'rgba(255, 255, 255, 0.07)', // Ultra-subtle hairline border
+  borderHover: 'rgba(255, 255, 255, 0.16)',
 
-  // Twilight Heather Accents & Highlights
-  accentLavender: '#A78BFA', // Soft heather lavender (Primary cozy accent)
-  accentLavenderLight: '#C4B5FD', // Luminous twilight highlight
-  accentViolet: '#8B5CF6', // Deep twilight violet
-  accentTwilightCyan: '#81E6D9', // Starry twilight cyan
-  accentIcy: '#38BDF8', // Celestial icy cyan
+  // Restrained, Natural Warmth Accents
+  accentWarmIvory: '#FAF8F5', // Primary button & focal elements
+  accentMutedEmber: '#D97757', // Quiet warm delta / heat accent
+  accentMutedSage: '#7E9F8E', // Quiet comfort window accent
+  accentMutedSlate: '#8898AA', // Quiet celestial / starlight accent
 
-  // Typography Tokens
-  textPrimary: '#FAF6F0', // Soft Linen (Warm ivory linen)
-  textSecondary: '#B4BED2', // Twilight muted slate
-  textMuted: '#74819B', // Celestial muted tone
+  // Neutral Typography Hierarchy
+  textPrimary: '#FFFFFF', // Pure crisp white
+  textSecondary: '#9E9EA7', // Soft editorial neutral grey
+  textMuted: '#5C5C66', // Low-emphasis caption tone
 };

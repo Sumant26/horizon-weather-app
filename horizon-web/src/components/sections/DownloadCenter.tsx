@@ -68,10 +68,10 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
   return (
     <section id="download" className="section-container">
       <div className="section-header">
-        <Badge variant="gold">DIRECT DISTRIBUTION</Badge>
-        <h2 className="section-title">Get Horizon for Your Device</h2>
+        <Badge variant="muted">DISTRIBUTION</Badge>
+        <h2 className="section-title">Install Horizon</h2>
         <p className="section-subtitle">
-          Zero app store intermediaries, zero telemetry, and instantaneous updates. Choose your platform below.
+          Direct, private, zero telemetry. Available as a standalone Android package or an iOS Home Screen app.
         </p>
       </div>
 

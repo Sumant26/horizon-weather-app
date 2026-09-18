@@ -10,20 +10,20 @@ import { GlassCard } from '../ui/GlassCard';
 import { Badge } from '../ui/Badge';
 
 const ICON_MAP: Record<string, React.ReactNode> = {
-  History: <History size={20} />,
-  Activity: <Activity size={20} />,
-  CheckCircle2: <CheckCircle2 size={20} />,
-  MoonStar: <MoonStar size={20} />,
+  History: <History size={18} />,
+  Activity: <Activity size={18} />,
+  CheckCircle2: <CheckCircle2 size={18} />,
+  MoonStar: <MoonStar size={18} />,
 };
 
 export const FeaturesShowcase: React.FC = () => {
   return (
     <section id="features" className="section-container">
       <div className="section-header">
-        <Badge variant="gold">DESIGN PHILOSOPHY</Badge>
-        <h2 className="section-title">Built for Human Comfort</h2>
+        <Badge variant="muted">CORE PHILOSOPHY</Badge>
+        <h2 className="section-title">Engineered for human intuition</h2>
         <p className="section-subtitle">
-          Four quiet, thoughtful insights designed to give you clarity at a glance without clutter or anxiety.
+          Four quiet insights designed to give you clarity at a glance without clutter, notifications, or anxiety.
         </p>
       </div>
 
@@ -35,13 +35,13 @@ export const FeaturesShowcase: React.FC = () => {
                 className="feature-icon-box"
                 style={{
                   color: pillar.accentColor,
-                  backgroundColor: `${pillar.accentColor}18`,
-                  borderColor: `${pillar.accentColor}33`,
+                  backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                  borderColor: 'rgba(255, 255, 255, 0.08)',
                 }}
               >
                 {ICON_MAP[pillar.iconName]}
               </div>
-              <span className="feature-badge" style={{ color: pillar.accentColor }}>
+              <span className="feature-badge" style={{ color: 'var(--text-muted)' }}>
                 {pillar.badge}
               </span>
             </div>

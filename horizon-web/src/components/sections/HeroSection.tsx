@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, Sparkles, Compass, Heart } from 'lucide-react';
+import { Download, Compass, Sparkles } from 'lucide-react';
 import { Badge } from '../ui/Badge';
 import { GlassCard } from '../ui/GlassCard';
 
@@ -15,51 +15,51 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   return (
     <section className="hero-section">
       <div className="hero-content">
-        {/* Top Tag */}
+        {/* Editorial Eyebrow Tag */}
         <div className="hero-tag-wrap" onClick={onExploreFeatures} style={{ cursor: 'pointer' }}>
-          <Badge variant="gold">HORIZON v1.0</Badge>
+          <Badge variant="muted">HORIZON v1.0</Badge>
           <span className="hero-subtag">
-            <Heart size={13} className="text-peach" /> Weather for humans, not meteorologists
+            Weather for humans, not meteorologists
           </span>
         </div>
 
-        {/* Headline */}
+        {/* Clean, Confident Headline */}
         <h1 className="hero-title">
-          Quiet, comfortable <br />
-          <span className="text-gradient-gold">weather clarity</span>.
+          A quieter, more human <br />
+          way to feel the weather.
         </h1>
 
         {/* Subtitle */}
         <p className="hero-desc">
-          An editorial atmospheric companion designed to bring peace to your day:
-          <strong className="text-linen"> temperature relative to yesterday</strong>, optimal 2-hour outdoor comfort windows, and only the gear you need.
+          Most weather apps overwhelm with raw radar maps and decimal points. Horizon tells you what matters in two seconds:
+          <strong className="text-white"> how today compares to yesterday</strong>, your best 2-hour outdoor window, and only the gear you need.
         </p>
 
         {/* CTA Buttons */}
         <div className="hero-cta-group">
           <button onClick={onDownloadClick} className="btn btn-primary btn-lg">
-            <Download size={18} />
+            <Download size={17} />
             <span>Get Horizon App</span>
           </button>
           <button onClick={onExploreFeatures} className="btn btn-secondary btn-lg">
-            <Sparkles size={18} />
-            <span>Core Philosophy</span>
+            <Sparkles size={17} />
+            <span>Philosophy</span>
           </button>
         </div>
 
-        {/* Quick Cozy Highlights */}
+        {/* Quick Editorial Glance Metrics */}
         <div className="hero-stats-grid">
           <div className="hero-stat-card">
             <span className="hero-stat-number">-2.8°C</span>
-            <span className="hero-stat-label">Yesterday Delta</span>
+            <span className="hero-stat-label">vs yesterday</span>
           </div>
           <div className="hero-stat-card">
             <span className="hero-stat-number">07:00 AM</span>
-            <span className="hero-stat-label">Comfort Window</span>
+            <span className="hero-stat-label">Best comfort window</span>
           </div>
           <div className="hero-stat-card">
             <span className="hero-stat-number">94%</span>
-            <span className="hero-stat-label">Sky Clarity</span>
+            <span className="hero-stat-label">Night sky clarity</span>
           </div>
         </div>
       </div>
@@ -73,12 +73,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 src="/assets/app_logo.jpg"
                 alt="Horizon Logo"
                 className="mockup-logo"
-                width={28}
-                height={28}
+                width={26}
+                height={26}
               />
-              <span className="mockup-node">HORIZON • COZY AMBIENCE</span>
+              <span className="mockup-node">HORIZON • GLANCEABLE</span>
             </div>
-            <span className="mockup-live-badge">GLANCEABLE</span>
+            <span className="mockup-live-badge">LIVE INSIGHT</span>
           </div>
 
           <div className="mockup-hero-temp">
@@ -95,7 +95,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           <div className="mockup-window-box">
             <div className="window-header">
-              <Compass size={14} className="text-gold" />
+              <Compass size={14} className="text-sage" />
               <span>OPTIMAL 2-HOUR WINDOW</span>
             </div>
             <div className="window-time">07:00 – 09:00 AM • Gentle Breeze (Comfort 94)</div>

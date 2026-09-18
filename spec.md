@@ -1,6 +1,6 @@
 # Technical Specification: Horizon Weather App & Horizon Web
 
-**Document Version:** 1.2.0  
+**Document Version:** 2.0.0  
 **Status:** Approved / Active  
 **Author:** Horizon Engineering & Design Team  
 **Date:** September 2026  
@@ -8,20 +8,15 @@
 
 ---
 
-## 1. Executive Summary & System Overview
+## 1. Executive Summary & Design Vision
 
-**Horizon** is a minimalist, high-contrast, editorial weather intelligence ecosystem designed to prioritize **human-first glanceability** over raw meteorological data overload. 
+**Horizon** is a minimalist, high-contrast editorial weather intelligence ecosystem crafted for **human-first glanceability** over raw meteorological noise.
 
-Rather than overwhelming the user with dense numerical tables and cluttered satellite radar layers, Horizon translates environmental conditions into actionable insights:
-1. **Contextual Meaning**: Explaining what the weather *means* for the user's day.
-2. **Relative Environmental Delta**: Comparing the current temperature directly against **yesterday at this exact hour**.
-3. **Optimal Outdoor Windows**: Dynamically identifying the best 2-hour window for outdoor activities (running, cycling, stargazing, outdoor dining).
-4. **Minimalist Gear Checklist**: Context-aware recommendations for essential items (sunglasses, jacket, umbrella).
-5. **Night Sky Clarity Index**: Real-time atmospheric transparency metrics for stargazing.
-
-The ecosystem comprises two primary deliverables:
-- **Horizon Mobile App**: A native, zero-dependency Flutter application built for Android and iOS.
-- **Horizon Web (`horizon-web`)**: A high-performance React + TypeScript + Vite companion showcase and distribution center styled with a cozy, calming **Twilight Heather** aesthetic.
+### Authentic Editorial Aesthetic
+- **Zero AI Cliches**: No neon purple glows, rainbow gradient texts, or generic SaaS widgets.
+- **Deep Matte Dark Palette**: Pure deep matte charcoal (`#060608`), elevated dark surfaces (`#0B0B0F`), and subtle hairline borders (`rgba(255, 255, 255, 0.07)`).
+- **Tactile Ivory & Warm Ember**: High-contrast solid bone-ivory controls (`#FAF8F5`) and quiet natural temperature delta indicators (`#D97757`).
+- **Quiet Typography**: Clean, confident typography with pure white headings and neutral slate secondary text.
 
 ---
 
@@ -61,22 +56,21 @@ The ecosystem comprises two primary deliverables:
 
 ---
 
-## 3. Web Design System: Twilight Heather Aesthetic
+## 3. Web Design System: Matte Dark Editorial Tokens
 
-| Token | Hex / Value | Description |
+| Token | Hex / Value | Purpose |
 |---|---|---|
-| `--bg-dark` | `#080A12` | Deep midnight celestial obsidian background |
-| `--bg-surface` | `#0F1322` | Twilight dark container surface |
-| `--bg-card` | `#14182C` | Deep celestial glass card base |
-| `--bg-glass` | `rgba(20, 24, 44, 0.78)` | Translucent twilight glass backdrop |
-| `--border-glass` | `rgba(167, 139, 250, 0.16)` | Subtle heather lavender border |
-| `--accent-lavender` | `#A78BFA` | Primary calming heather lavender accent |
-| `--accent-lavender-light` | `#C4B5FD` | Luminous twilight highlight |
-| `--accent-violet` | `#8B5CF6` | Deep twilight violet |
-| `--accent-cyan` | `#81E6D9` | Starry twilight cyan for celestial clarity |
-| `--text-primary` | `#FAF6F0` | Warm ivory soft linen typography |
-| `--text-secondary` | `#B4BED2` | Twilight muted slate secondary text |
-| `--text-muted` | `#74819B` | Celestial muted tone |
+| `--bg-dark` | `#060608` | Pure deep matte charcoal ground |
+| `--bg-surface` | `#0B0B0F` | Elevated dark container surface |
+| `--bg-card` | `#0E0E13` | Matte frosted glass card base |
+| `--border-hairline` | `rgba(255, 255, 255, 0.07)` | Ultra-subtle hairline border |
+| `--accent-ivory` | `#FAF8F5` | Solid bone-ivory tactile primary button & focal highlights |
+| `--accent-ember` | `#D97757` | Quiet natural warm delta / heat indicator |
+| `--accent-sage` | `#7E9F8E` | Quiet activity comfort window accent |
+| `--accent-slate` | `#8898AA` | Quiet celestial night sky accent |
+| `--text-primary` | `#FFFFFF` | Pure crisp white typography |
+| `--text-secondary` | `#9E9EA7` | Editorial neutral grey |
+| `--text-muted` | `#5C5C66` | Low-emphasis caption text |
 
 ---
 

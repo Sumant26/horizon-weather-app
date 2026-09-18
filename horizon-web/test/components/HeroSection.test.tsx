@@ -14,7 +14,7 @@ describe('HeroSection Component', () => {
       />,
     );
 
-    expect(screen.getByText(/weather clarity/i)).toBeInTheDocument();
+    expect(screen.getByText(/way to feel the weather/i)).toBeInTheDocument();
     expect(screen.getByText('-2.8° Cooler')).toBeInTheDocument();
     expect(screen.getByText(/07:00 – 09:00 AM/i)).toBeInTheDocument();
   });
