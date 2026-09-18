@@ -233,41 +233,48 @@ h1, h2, h3, h4, .font-display {
   z-index: 50;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  background: rgba(6, 6, 8, 0.88);
+  background: rgba(6, 6, 8, 0.92);
   border-bottom: 1px solid var(--border-hairline);
+  width: 100%;
 }
 
 .navbar-inner {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 14px 24px;
+  padding: 12px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
 }
 
 .navbar-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  min-width: 0;
+  flex-shrink: 1;
 }
 
 .navbar-logo {
   border-radius: 7px;
   border: 1px solid rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
 }
 
 .navbar-title-group {
   display: flex;
   align-items: baseline;
-  gap: 6px;
+  gap: 5px;
+  flex-shrink: 0;
 }
 
 .navbar-title {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   color: #ffffff;
 }
 
@@ -286,15 +293,18 @@ h1, h2, h3, h4, .font-display {
   border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 3px 8px;
   border-radius: 6px;
-  margin-left: 8px;
+  margin-left: 4px;
   font-size: 0.73rem;
   color: var(--text-secondary);
+  flex-shrink: 1;
+  min-width: 0;
+  white-space: nowrap;
 }
 
 .navbar-city-name {
   font-weight: 500;
   color: #ffffff;
-  max-width: 120px;
+  max-width: 110px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -308,19 +318,20 @@ h1, h2, h3, h4, .font-display {
   padding: 1px 4px;
   border-radius: 4px;
   font-size: 0.7rem;
+  flex-shrink: 0;
 }
 
 .navbar-nav {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
 }
 
 .nav-link {
   background: none;
   border: none;
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 500;
   cursor: pointer;
   transition: color 0.15s;
@@ -334,7 +345,20 @@ h1, h2, h3, h4, .font-display {
 .navbar-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.navbar-get-btn {
+  padding: 9px 16px;
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+
+.navbar-source-btn {
+  padding: 9px 12px;
+  font-size: 0.86rem;
+  white-space: nowrap;
 }
 
 /* ==========================================================================
@@ -1642,11 +1666,18 @@ h1, h2, h3, h4, .font-display {
   }
 }
 
-/* Medium Mobile & Small Tablets (480px to 768px) */
-@media (max-width: 768px) {
+/* Navbar breakpoint for medium screens */
+@media (max-width: 920px) {
   .navbar-nav {
     display: none;
   }
+  .navbar-version {
+    display: none;
+  }
+}
+
+/* Medium Mobile & Small Tablets (480px to 768px) */
+@media (max-width: 768px) {
   .section-container {
     padding: 60px 20px;
   }
@@ -1674,13 +1705,26 @@ h1, h2, h3, h4, .font-display {
   }
 }
 
+/* Small Screens under 600px — Compact Navbar actions */
+@media (max-width: 600px) {
+  .navbar-btn-text {
+    display: none;
+  }
+  .navbar-source-btn {
+    padding: 8px 10px;
+  }
+  .navbar-city-name {
+    max-width: 80px;
+  }
+}
+
 /* Compact Smartphones (360px to 480px) */
 @media (max-width: 480px) {
   .navbar-inner {
     padding: 10px 14px;
   }
   .navbar-city-name {
-    max-width: 85px;
+    max-width: 70px;
   }
   .section-container {
     padding: 44px 14px;

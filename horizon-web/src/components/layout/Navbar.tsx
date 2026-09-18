@@ -24,8 +24,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             src="/assets/app_logo.jpg?v=2"
             alt="Horizon Logo"
             className="navbar-logo"
-            width={34}
-            height={34}
+            width={32}
+            height={32}
           />
           <div className="navbar-title-group">
             <span className="navbar-title">HORIZON</span>
@@ -61,19 +61,19 @@ export const Navbar: React.FC<NavbarProps> = ({
           </a>
         </nav>
 
-        {/* Primary Action Button */}
+        {/* Primary Action Buttons */}
         <div className="navbar-actions">
           <a
             href={APP_METADATA.githubUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-ghost"
+            className="btn btn-ghost navbar-source-btn"
             title="GitHub Repository"
           >
             <Github size={16} />
-            <span>Source</span>
+            <span className="navbar-btn-text">Source</span>
           </a>
-          <button onClick={onScrollToDownload} className="btn btn-primary">
+          <button onClick={onScrollToDownload} className="btn btn-primary navbar-get-btn">
             <Download size={15} />
             <span>Get App</span>
           </button>
