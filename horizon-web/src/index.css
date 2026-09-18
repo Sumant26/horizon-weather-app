@@ -255,6 +255,7 @@ h1, h2, h3, h4, .font-display {
   gap: 8px;
   min-width: 0;
   flex-shrink: 1;
+  overflow: hidden;
 }
 
 .navbar-logo {
@@ -288,15 +289,16 @@ h1, h2, h3, h4, .font-display {
 .navbar-location-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 3px 9px;
+  padding: 3px 8px;
   border-radius: 20px;
-  margin-left: 6px;
+  margin-left: 4px;
   font-size: 0.74rem;
   color: var(--text-secondary);
-  flex-shrink: 0;
+  flex-shrink: 1;
+  min-width: 0;
   white-space: nowrap;
 }
 
@@ -307,11 +309,11 @@ h1, h2, h3, h4, .font-display {
 .navbar-city-name {
   font-weight: 500;
   color: #ffffff;
-  max-width: 120px;
+  max-width: 110px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  flex-shrink: 0;
+  flex-shrink: 1;
 }
 
 .navbar-temp-tag {
@@ -1679,6 +1681,12 @@ h1, h2, h3, h4, .font-display {
 
 /* Medium Mobile & Small Tablets (480px to 768px) */
 @media (max-width: 768px) {
+  .navbar-source-btn {
+    display: none;
+  }
+  .navbar-city-name {
+    max-width: 85px;
+  }
   .section-container {
     padding: 60px 20px;
   }
@@ -1708,24 +1716,35 @@ h1, h2, h3, h4, .font-display {
 
 /* Small Screens under 600px — Compact Navbar actions */
 @media (max-width: 600px) {
-  .navbar-btn-text {
-    display: none;
-  }
-  .navbar-source-btn {
-    padding: 8px 10px;
-  }
   .navbar-city-name {
-    max-width: 80px;
+    max-width: 75px;
   }
 }
 
 /* Compact Smartphones (360px to 480px) */
 @media (max-width: 480px) {
   .navbar-inner {
-    padding: 10px 14px;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  .navbar-logo {
+    width: 26px;
+    height: 26px;
+  }
+  .navbar-title {
+    font-size: 0.95rem;
+  }
+  .navbar-location-pill {
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    margin-left: 2px;
   }
   .navbar-city-name {
-    max-width: 70px;
+    max-width: 65px;
+  }
+  .navbar-get-btn {
+    padding: 7px 12px;
+    font-size: 0.8rem;
   }
   .section-container {
     padding: 44px 14px;

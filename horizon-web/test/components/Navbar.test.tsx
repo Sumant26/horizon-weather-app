@@ -33,7 +33,7 @@ describe('Navbar Component', () => {
     );
 
     expect(screen.getByText('Tokyo')).toBeInTheDocument();
-    expect(screen.getByText('21.4°')).toBeInTheDocument();
+    expect(screen.getByText('21°')).toBeInTheDocument();
   });
 
   it('triggers callback when clicking Get App button', () => {
