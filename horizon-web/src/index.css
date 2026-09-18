@@ -80,6 +80,8 @@ h1, h2, h3, h4, .font-display {
 .text-ember { color: var(--accent-ember); }
 .text-sage { color: var(--accent-sage); }
 .text-slate { color: var(--accent-slate); }
+.text-cool { color: #38bdf8; } /* Cool sky cyan for cooler temperature */
+.text-warm { color: #d97757; } /* Warm ember for warmer temperature */
 
 /* Common Layout Containers */
 .section-container {
@@ -415,14 +417,37 @@ h1, h2, h3, h4, .font-display {
   color: var(--text-muted);
 }
 
-.mockup-live-badge {
-  font-size: 0.65rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.05);
-  padding: 3px 7px;
+.mockup-scenario-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 3px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.scenario-pill {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  padding: 3px 8px;
   border-radius: 5px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.scenario-pill:hover {
+  color: #ffffff;
+}
+
+.scenario-pill.active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .mockup-hero-temp {
@@ -450,7 +475,22 @@ h1, h2, h3, h4, .font-display {
 .delta-badge {
   font-size: 0.92rem;
   font-weight: 600;
-  color: var(--accent-ember);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color var(--transition-fast);
+}
+
+.delta-badge.delta-cool {
+  color: #38bdf8 !important; /* Calming crisp cyan for cooler delta */
+}
+
+.delta-badge.delta-warm {
+  color: #d97757 !important; /* Warm ember for warmer delta */
+}
+
+.delta-badge.delta-mild {
+  color: #7e9f8e !important; /* Calming sage for steady delta */
 }
 
 .delta-sub {
@@ -466,7 +506,20 @@ h1, h2, h3, h4, .font-display {
   padding: 12px 14px;
   background: rgba(255, 255, 255, 0.025);
   border-radius: var(--radius-sm);
-  border-left: 2px solid var(--accent-ember);
+  border-left: 2px solid var(--border-hairline);
+  transition: border-left-color var(--transition-fast);
+}
+
+.mockup-summary.summary-cool {
+  border-left-color: #38bdf8;
+}
+
+.mockup-summary.summary-warm {
+  border-left-color: #d97757;
+}
+
+.mockup-summary.summary-mild {
+  border-left-color: #7e9f8e;
 }
 
 .mockup-window-box {
