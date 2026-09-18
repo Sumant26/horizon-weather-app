@@ -37,7 +37,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               <MapPin size={11} className="text-sage" />
               <span className="navbar-city-name">{locationName.split(',')[0]}</span>
               {currentTemp !== undefined && (
-                <span className="navbar-temp-tag">{currentTemp.toFixed(1)}°</span>
+                <>
+                  <span className="navbar-dot-sep">•</span>
+                  <span className="navbar-temp-tag">{currentTemp.toFixed(1)}°</span>
+                </>
               )}
             </div>
           )}
