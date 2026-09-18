@@ -801,18 +801,46 @@ h1, h2, h3, h4, .font-display {
   letter-spacing: 0.06em;
 }
 
-.copy-btn {
+.checksum-info-btn {
   background: none;
   border: none;
-  color: var(--text-secondary);
-  font-size: 0.72rem;
-  font-weight: 500;
+  color: var(--text-muted);
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px;
+  transition: color var(--transition-fast);
 }
 
-.copy-btn:hover {
+.checksum-info-btn:hover {
   color: #ffffff;
-  text-decoration: underline;
+}
+
+.checksum-explainer {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-hairline);
+  padding: 6px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.checksum-code-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-hairline);
+  border-radius: 5px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.checksum-code-wrapper:hover {
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .checksum-code {
@@ -820,11 +848,189 @@ h1, h2, h3, h4, .font-display {
   font-family: var(--font-mono);
   font-size: 0.68rem;
   color: var(--text-secondary);
-  background: rgba(0, 0, 0, 0.4);
-  padding: 6px 8px;
-  border-radius: 5px;
   word-break: break-all;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.checksum-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0 0 0 6px;
+}
+
+/* ==========================================================================
+   IN-BROWSER APK VERIFIER DROPZONE
+   ========================================================================== */
+.verifier-container {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-hairline);
+}
+
+.verifier-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.verifier-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.verifier-privacy-tag {
+  font-size: 0.66rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 2px 6px;
+  border-radius: 4px;
   border: 1px solid var(--border-hairline);
+}
+
+.verifier-dropzone {
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.015);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.verifier-dropzone:hover,
+.verifier-dropzone.dragging {
+  border-color: var(--accent-sage);
+  background: rgba(126, 159, 142, 0.05);
+}
+
+.dropzone-icon {
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.dropzone-text {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.dropzone-sub {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.verifier-status-box {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-text {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.status-sub {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.verifier-result-box {
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.verifier-result-box.result-success {
+  background: rgba(126, 159, 142, 0.07);
+  border: 1px solid rgba(126, 159, 142, 0.25);
+}
+
+.verifier-result-box.result-warning {
+  background: rgba(217, 119, 87, 0.08);
+  border: 1px solid rgba(217, 119, 87, 0.3);
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.84rem;
+}
+
+.verifier-reset-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.verifier-reset-btn:hover {
+  color: #ffffff;
+}
+
+.result-desc {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.result-hashes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-hairline);
+}
+
+.hash-row {
+  display: flex;
+  font-size: 0.68rem;
+  gap: 6px;
+}
+
+.hash-label {
+  color: var(--text-muted);
+  min-width: 65px;
+}
+
+.hash-value {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  word-break: break-all;
+}
+
+.verifier-error {
+  font-size: 0.75rem;
+  color: #f87171;
+  margin-top: 6px;
 }
 
 /* iOS PWA Grid & Step Cards */

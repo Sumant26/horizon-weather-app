@@ -9,15 +9,21 @@ import {
   Apple,
   Share,
   PlusSquare,
+  ChevronDown,
+  ChevronUp,
+  Info,
+  GitBranch,
 } from 'lucide-react';
 import { APP_METADATA } from '../../core/constants/theme';
 import { PlatformType } from '../../core/utils/platform_detector';
 import { generateQrDataUrl } from '../../core/utils/qr_generator';
+import { fetchLatestRelease, GitHubRelease } from '../../domain/services/github_release_service';
 import { GlassCard } from '../ui/GlassCard';
 import { Badge } from '../ui/Badge';
 import { TabGroup } from '../ui/TabGroup';
 import { Modal } from '../ui/Modal';
 import { SideloadGuideModal } from './SideloadGuideModal';
+import { ApkVerifierDropzone } from './ApkVerifierDropzone';
 
 interface DownloadCenterProps {
   selectedPlatform: PlatformType;
@@ -40,6 +46,9 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
 }) => {
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [qrDataUrl, setQrDataUrl] = useState<string>('');
+  const [liveRelease, setLiveRelease] = useState<GitHubRelease | null>(null);
+  const [isFullChecksum, setIsFullChecksum] = useState(false);
+  const [showChecksumExplainer, setShowChecksumExplainer] = useState(false);
 
   useEffect(() => {
     const downloadUrl =
@@ -48,14 +57,23 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
         : APP_METADATA.apkDownloadUrl;
 
     generateQrDataUrl(downloadUrl).then(setQrDataUrl);
+
+    // Fetch dynamic GitHub release metadata
+    fetchLatestRelease().then((release) => {
+      if (release) setLiveRelease(release);
+    });
   }, []);
+
+  const versionString = liveRelease?.tagName || APP_METADATA.version;
+  const apkSizeString = liveRelease?.apkSize || APP_METADATA.apkSize;
+  const apkDownloadLink = liveRelease?.apkDownloadUrl || APP_METADATA.apkDownloadUrl;
 
   const tabs = [
     {
       id: 'android' as PlatformType,
       label: 'Android APK',
       icon: <Smartphone size={18} />,
-      badge: 'v1.0.0',
+      badge: versionString,
     },
     {
       id: 'ios' as PlatformType,
@@ -94,6 +112,11 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
                     <Smartphone size={14} /> Android Universal APK
                   </span>
                   <span className="meta-tag">ARM64 & x86_64</span>
+                  {liveRelease && (
+                    <span className="meta-tag flex items-center gap-1 text-sage">
+                      <GitBranch size={11} /> GitHub Sync
+                    </span>
+                  )}
                 </div>
 
                 <h3 className="download-heading">Horizon for Android</h3>
@@ -104,12 +127,12 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
                 {/* Primary Action Buttons */}
                 <div className="download-btn-row">
                   <a
-                    href={APP_METADATA.apkDownloadUrl}
+                    href={apkDownloadLink}
                     download="horizon-release.apk"
                     className="btn btn-primary btn-lg"
                   >
                     <Download size={18} />
-                    <span>Download APK ({APP_METADATA.apkSize})</span>
+                    <span>Download APK ({apkSizeString})</span>
                   </a>
 
                   <button
@@ -132,6 +155,9 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
                     <span>How to install APK on Android (3 simple steps)</span>
                   </button>
                 </div>
+
+                {/* Client-Side In-Browser Verifier Dropzone */}
+                <ApkVerifierDropzone expectedChecksum={APP_METADATA.apkChecksum} />
               </div>
 
               {/* Right Column: Checksum & File Info */}
@@ -140,11 +166,11 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
                   <h4 className="info-box-title">Release Metadata</h4>
                   <div className="info-row">
                     <span className="info-label">Version</span>
-                    <span className="info-val">{APP_METADATA.version}</span>
+                    <span className="info-val">{versionString}</span>
                   </div>
                   <div className="info-row">
                     <span className="info-label">File Size</span>
-                    <span className="info-val">{APP_METADATA.apkSize}</span>
+                    <span className="info-val">{apkSizeString}</span>
                   </div>
                   <div className="info-row">
                     <span className="info-label">Target SDK</span>
@@ -155,10 +181,20 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
                     <span className="info-val">Universal (ARM64, v7a, x86_64)</span>
                   </div>
 
-                  {/* Cryptographic SHA-256 Checksum */}
+                  {/* Cryptographic SHA-256 Checksum with Full Inspector */}
                   <div className="checksum-box">
                     <div className="checksum-header">
-                      <span className="checksum-title">SHA-256 Checksum</span>
+                      <div className="flex items-center gap-1">
+                        <span className="checksum-title">SHA-256 Checksum</span>
+                        <button
+                          type="button"
+                          onClick={() => setShowChecksumExplainer(!showChecksumExplainer)}
+                          className="checksum-info-btn"
+                          title="What is a checksum?"
+                        >
+                          <Info size={13} />
+                        </button>
+                      </div>
                       <button
                         onClick={() => onCopyChecksum(APP_METADATA.apkChecksum)}
                         className="copy-btn"
@@ -175,9 +211,27 @@ export const DownloadCenter: React.FC<DownloadCenterProps> = ({
                         )}
                       </button>
                     </div>
-                    <code className="checksum-code">
-                      {APP_METADATA.apkChecksum.slice(0, 32)}...
-                    </code>
+
+                    {showChecksumExplainer && (
+                      <div className="checksum-explainer">
+                        A cryptographic hash proving the file has not been altered or corrupted during download.
+                      </div>
+                    )}
+
+                    <div
+                      className="checksum-code-wrapper"
+                      onClick={() => setIsFullChecksum(!isFullChecksum)}
+                      title="Click to toggle full hash"
+                    >
+                      <code className="checksum-code">
+                        {isFullChecksum
+                          ? APP_METADATA.apkChecksum
+                          : `${APP_METADATA.apkChecksum.slice(0, 32)}...`}
+                      </code>
+                      <button className="checksum-toggle-btn">
+                        {isFullChecksum ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -88,3 +88,25 @@ Every local commit verifies:
 Automated verification on every pull request and push to `main`:
 - **Flutter Verification Job**: Runs `dart format` on `lib/` and `test/`, static analysis, unit test coverage, and builds verification APK.
 - **Web Verification Job**: Runs `npm ci`, typecheck, lint, Vitest tests, and Vite production bundle compilation.
+
+---
+
+## 5. Advanced Feature Specifications
+
+### 5.1 In-Browser APK Integrity Verifier (Web Crypto API)
+- **Zero Server Upload**: Direct client-side `crypto.subtle.digest('SHA-256', arrayBuffer)` execution inside the browser sandbox.
+- **Interactive Dropzone**: Drag-and-drop or file selector accepting `.apk` packages.
+- **Instant Match & Verification**: Computes 64-character hexadecimal hash in under 500ms and verifies character-for-character against official build metadata.
+
+### 5.2 Dynamic GitHub Releases Sync
+- **Live Endpoint**: Asynchronously queries `api.github.com/repos/Sumant26/horizon-weather-app/releases/latest`.
+- **Dynamic Assets**: Automatically updates version badges, APK file sizes, published timestamps, and direct asset download URLs with graceful offline fallback.
+
+### 5.3 Circadian Solar Theme Engine (Flutter)
+- **Solar Phase Calculation**: Evaluates local solar time across 7 distinct circadian phases (`Misty Dawn`, `Solar Sunrise`, `Golden Morning`, `Solar Noon`, `Golden Hour`, `Twilight Dusk`, `Deep OLED Night`).
+- **Dynamic Ambient Interpolation**: Blends smooth atmospheric background gradients according to real solar altitude while preserving high-contrast accessibility.
+
+### 5.4 Quick Glance Widgets (Android & iOS)
+- **Compact 2x2 Glance**: Immediate temperature reading, location title, and comparative delta indicator (`-2.8° Cooler`).
+- **Wide 4x2 Dashboard**: Bioclimatic comfort corridor (`07:00 – 09:00 AM`), night sky clarity score, and minimal gear checklist.
+

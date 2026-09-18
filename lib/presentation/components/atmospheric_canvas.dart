@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/theme/circadian_theme_engine.dart';
 import '../../domain/entities/weather_condition.dart';
 
 class AtmosphericCanvasBackground extends StatefulWidget {
@@ -89,10 +90,8 @@ class _AtmosphericCanvasBackgroundState
       }
     }
 
+    // Active precipitation and extreme weather take precedence
     switch (condition) {
-      case WeatherCondition.clearNight:
-      case WeatherCondition.partlyCloudyNight:
-        return AppColors.clearNightGradient;
       case WeatherCondition.rainy:
       case WeatherCondition.drizzle:
       case WeatherCondition.thunderstorm:
@@ -103,10 +102,9 @@ class _AtmosphericCanvasBackgroundState
       case WeatherCondition.foggy:
       case WeatherCondition.snowy:
         return AppColors.overcastGradient;
-      case WeatherCondition.clearDay:
-      case WeatherCondition.partlyCloudyDay:
       default:
-        return AppColors.clearDayGradient;
+        // Circadian Solar Gradient based on time of day
+        return CircadianThemeEngine.getGradient(DateTime.now()).colors;
     }
   }
 
