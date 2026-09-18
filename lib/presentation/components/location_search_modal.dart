@@ -69,7 +69,64 @@ class _LocationSearchModalState extends State<LocationSearchModal> {
                   color: Colors.white38,
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 10),
+              // Use Live Location Button
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: state.isLocating
+                      ? null
+                      : () async {
+                          await widget.locationNotifier
+                              .detectCurrentLocation(autoSelect: true);
+                          if (context.mounted) Navigator.pop(context);
+                        },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: AppColors.twilightCyan.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: AppColors.twilightCyan.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        if (state.isLocating)
+                          const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.twilightCyan,
+                            ),
+                          )
+                        else
+                          const Icon(Icons.near_me_rounded,
+                              color: AppColors.twilightCyan, size: 16),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            state.isLocating
+                                ? 'Detecting Live Location...'
+                                : 'Detect & Use Live GPS Location',
+                            style: const TextStyle(
+                              color: AppColors.twilightCyan,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        const Icon(Icons.arrow_forward_ios_rounded,
+                            color: AppColors.twilightCyan, size: 12),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
               // Search Input Field
               TextField(
                 controller: _searchController,

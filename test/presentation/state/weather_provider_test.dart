@@ -83,6 +83,11 @@ class MockWeatherRepository implements WeatherRepository {
   Future<List<LocationEntity>> searchLocations(String query) async {
     return [LocationEntity.defaultLocation];
   }
+
+  @override
+  Future<LocationEntity?> detectCurrentLocation() async {
+    return LocationEntity.defaultLocation;
+  }
 }
 
 void main() {

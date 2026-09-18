@@ -61,4 +61,12 @@ class ApiEndpoints {
       '&language=en&format=json',
     );
   }
+
+  static Uri ipLocationPrimary() {
+    return Uri.parse('https://ipapi.co/json/');
+  }
+
+  static Uri ipLocationSecondary() {
+    return Uri.parse('https://freeipapi.com/api/json');
+  }
 }

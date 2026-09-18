@@ -7,6 +7,7 @@ import 'data/datasources/remote_weather_datasource.dart';
 import 'data/repositories/settings_repository_impl.dart';
 import 'data/repositories/weather_repository_impl.dart';
 import 'domain/usecases/calculate_optimal_window.dart';
+import 'domain/usecases/detect_current_location.dart';
 import 'domain/usecases/get_weather_forecast.dart';
 import 'domain/usecases/search_locations.dart';
 import 'presentation/screens/home_screen.dart';
@@ -42,6 +43,7 @@ void main() async {
   // Initialize Use Cases
   final getWeatherForecast = GetWeatherForecast(weatherRepository);
   final searchLocations = SearchLocations(weatherRepository);
+  final detectCurrentLocation = DetectCurrentLocation(weatherRepository);
   const calculateOptimalWindow = CalculateOptimalWindow();
 
   // Initialize Notifiers
@@ -49,6 +51,7 @@ void main() async {
   final locationNotifier = LocationNotifier(
     settingsRepository: settingsRepository,
     searchLocations: searchLocations,
+    detectCurrentLocation: detectCurrentLocation,
   );
   final weatherNotifier = WeatherNotifier(
     getWeatherForecast: getWeatherForecast,

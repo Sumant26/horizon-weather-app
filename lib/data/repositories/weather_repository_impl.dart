@@ -159,6 +159,26 @@ class WeatherRepositoryImpl implements WeatherRepository {
     }
   }
 
+  @override
+  Future<LocationEntity?> detectCurrentLocation() async {
+    try {
+      final data = await _remoteDatasource.detectCurrentLocation();
+      if (data != null) {
+        return LocationEntity(
+          name: data['name'] as String? ?? 'Current Location',
+          admin1: data['admin1'] as String?,
+          country: data['country'] as String?,
+          latitude: (data['latitude'] as num?)?.toDouble() ?? 0.0,
+          longitude: (data['longitude'] as num?)?.toDouble() ?? 0.0,
+          isCurrentLocation: true,
+        );
+      }
+    } catch (e) {
+      AppLogger.warning('Failed to detect current location in repository: $e');
+    }
+    return null;
+  }
+
   WeatherEntity _parseWeatherEntityFromJson(
     Map<String, dynamic> json,
     LocationEntity location, {

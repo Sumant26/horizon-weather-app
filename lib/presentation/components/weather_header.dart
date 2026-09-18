@@ -81,15 +81,37 @@ class WeatherHeader extends StatelessWidget {
                   spacing: 6,
                   runSpacing: 2,
                   children: [
-                    const Text(
-                      'HORIZON NODE',
+                    Text(
+                      location.isCurrentLocation
+                          ? 'CURRENT LIVE NODE'
+                          : 'HORIZON NODE',
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white38,
+                        color: location.isCurrentLocation
+                            ? AppColors.twilightCyan
+                            : Colors.white38,
                         letterSpacing: 1.6,
                       ),
                     ),
+                    if (location.isCurrentLocation)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 1.5),
+                        decoration: BoxDecoration(
+                          color: AppColors.twilightCyan.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: const Text(
+                          'LIVE GPS',
+                          style: TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.twilightCyan,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                      ),
                     if (isFromCache)
                       Container(
                         padding: const EdgeInsets.symmetric(

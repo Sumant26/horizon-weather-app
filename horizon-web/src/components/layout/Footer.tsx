@@ -11,7 +11,7 @@ export const Footer: React.FC = () => {
           <div className="footer-brand-col">
             <div className="footer-logo-row">
               <img
-                src="/assets/app_logo.jpg"
+                src="/assets/app_logo.jpg?v=2"
                 alt="Horizon Logo"
                 className="footer-logo"
                 width={30}

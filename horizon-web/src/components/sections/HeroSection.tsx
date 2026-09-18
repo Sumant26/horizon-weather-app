@@ -7,11 +7,14 @@ import {
   ArrowUpRight,
   Minus,
   Sliders,
-  Layers,
+  MapPin,
+  Navigation,
+  Loader2,
 } from 'lucide-react';
 import { Badge } from '../ui/Badge';
 import { GlassCard } from '../ui/GlassCard';
 import { AtmosphericCanvas } from '../ui/AtmosphericCanvas';
+import { fetchUserLiveWeather, LiveWeatherData } from '../../domain/services/live_weather_service';
 
 interface HeroSectionProps {
   onDownloadClick: () => void;
@@ -21,6 +24,8 @@ interface HeroSectionProps {
 interface TempScenario {
   id: string;
   name: string;
+  location: string;
+  microclimate: string;
   temp: number;
   yesterdayTemp: number;
   summary: string;
@@ -33,6 +38,8 @@ const SCENARIOS: TempScenario[] = [
   {
     id: 'cool',
     name: 'Morning Crisp',
+    location: 'San Francisco, CA',
+    microclimate: 'Pacific Heights • 82m Elev',
     temp: 22.4,
     yesterdayTemp: 25.2,
     summary:
@@ -44,6 +51,8 @@ const SCENARIOS: TempScenario[] = [
   {
     id: 'warm',
     name: 'Afternoon Sun',
+    location: 'Austin, TX',
+    microclimate: 'Zilker Park • High UV Index',
     temp: 29.1,
     yesterdayTemp: 25.7,
     summary:
@@ -55,6 +64,8 @@ const SCENARIOS: TempScenario[] = [
   {
     id: 'mild',
     name: 'Quiet Dusk',
+    location: 'Oslo, Norway',
+    microclimate: 'Frogner Park • Clear Atmosphere',
     temp: 19.8,
     yesterdayTemp: 19.8,
     summary:
@@ -72,11 +83,50 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const [activeScenario, setActiveScenario] = useState<TempScenario>(SCENARIOS[0]);
   const [isSliderMode, setIsSliderMode] = useState(false);
   const [currentTemp, setCurrentTemp] = useState<number>(22.4);
+  const [liveData, setLiveData] = useState<LiveWeatherData | null>(null);
+  const [isLocating, setIsLocating] = useState(false);
+  const [isLiveActive, setIsLiveActive] = useState(false);
   const yesterdayBase = 25.2;
 
+  const handleFetchMyLocation = async () => {
+    setIsLocating(true);
+    setIsSliderMode(false);
+    try {
+      const data = await fetchUserLiveWeather();
+      setLiveData(data);
+      setIsLiveActive(true);
+    } catch {
+      // Keep active scenario if denied/failed
+    } finally {
+      setIsLocating(false);
+    }
+  };
+
   // Active values depending on mode
-  const displayTemp = isSliderMode ? currentTemp : activeScenario.temp;
-  const yesterdayRef = isSliderMode ? yesterdayBase : activeScenario.yesterdayTemp;
+  const displayLocation = isSliderMode
+    ? 'Local Microclimate'
+    : isLiveActive && liveData
+    ? liveData.locationName
+    : activeScenario.location;
+
+  const displayMicroclimate = isSliderMode
+    ? 'Manual Live Simulation'
+    : isLiveActive && liveData
+    ? liveData.microclimate
+    : activeScenario.microclimate;
+
+  const displayTemp = isSliderMode
+    ? currentTemp
+    : isLiveActive && liveData
+    ? liveData.temperature
+    : activeScenario.temp;
+
+  const yesterdayRef = isSliderMode
+    ? yesterdayBase
+    : isLiveActive && liveData
+    ? liveData.yesterdayTemperature
+    : activeScenario.yesterdayTemp;
+
   const diffVal = parseFloat((displayTemp - yesterdayRef).toFixed(1));
 
   const deltaType: 'cool' | 'warm' | 'mild' =
@@ -101,7 +151,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       : diffVal > 2.0
       ? '"Significant heat jump from yesterday. Stay hydrated and seek shade during peak midday hours."'
       : '"Mild, steady temperature closely matching yesterday. Ideal comfort window for outdoor activities."'
+    : isLiveActive && liveData
+    ? liveData.summary
     : activeScenario.summary;
+
+  const dynamicWindowTime = isLiveActive && liveData ? liveData.optimalWindow : activeScenario.windowTime;
+  const dynamicWindowSub = isLiveActive && liveData ? liveData.optimalSub : activeScenario.windowSub;
+  const dynamicGear = isLiveActive && liveData ? liveData.gear : activeScenario.gear;
 
   return (
     <section className="hero-section">
@@ -163,48 +219,68 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="mockup-header">
             <div className="mockup-brand">
               <img
-                src="/assets/app_logo.jpg"
+                src="/assets/app_logo.jpg?v=2"
                 alt="Horizon Logo"
                 className="mockup-logo"
-                width={26}
-                height={26}
+                width={30}
+                height={30}
               />
-              <span className="mockup-node">HORIZON • GLANCEABLE</span>
+              <div className="mockup-location-group">
+                <div className="mockup-location-title">
+                  <MapPin size={13} className="text-sage" />
+                  <span>{displayLocation}</span>
+                  {isLiveActive && <span className="live-pulse-dot" title="Live GPS Connected" />}
+                </div>
+                <span className="mockup-location-sub">{displayMicroclimate}</span>
+              </div>
             </div>
 
-            {/* Mode Switcher: Presets vs Live Slider */}
-            <div className="mockup-mode-switch">
+            {/* Seamless Segmented Control */}
+            <div className="mockup-scenario-tabs">
               <button
-                onClick={() => setIsSliderMode(false)}
-                className={`mode-btn ${!isSliderMode ? 'active' : ''}`}
-                title="Scenario Presets"
+                onClick={handleFetchMyLocation}
+                className={`scenario-pill ${isLiveActive && !isSliderMode ? 'active' : ''}`}
+                title="Detect live weather at your current location"
+                disabled={isLocating}
               >
-                <Layers size={13} />
+                {isLocating ? (
+                  <Loader2 size={12} className="spinner" />
+                ) : (
+                  <Navigation size={12} className={isLiveActive ? 'text-cyan' : ''} />
+                )}
+                <span>{isLocating ? 'Locating...' : 'My Location'}</span>
               </button>
-              <button
-                onClick={() => setIsSliderMode(true)}
-                className={`mode-btn ${isSliderMode ? 'active' : ''}`}
-                title="Interactive Delta Scrubber"
-              >
-                <Sliders size={13} />
-              </button>
-            </div>
-          </div>
 
-          {/* Scenario Tabs (when not in slider mode) */}
-          {!isSliderMode ? (
-            <div className="mockup-scenario-tabs mb-4">
               {SCENARIOS.map((scenario) => (
                 <button
                   key={scenario.id}
-                  onClick={() => setActiveScenario(scenario)}
-                  className={`scenario-pill ${activeScenario.id === scenario.id ? 'active' : ''}`}
+                  onClick={() => {
+                    setActiveScenario(scenario);
+                    setIsLiveActive(false);
+                    setIsSliderMode(false);
+                  }}
+                  className={`scenario-pill ${activeScenario.id === scenario.id && !isSliderMode && !isLiveActive ? 'active' : ''}`}
                 >
                   {scenario.name}
                 </button>
               ))}
+
+              <button
+                onClick={() => {
+                  setIsSliderMode(!isSliderMode);
+                  setIsLiveActive(false);
+                }}
+                className={`scenario-pill ${isSliderMode ? 'active' : ''}`}
+                title="Interactive Temperature Scrubber"
+              >
+                <Sliders size={12} />
+                <span>Scrub</span>
+              </button>
             </div>
-          ) : (
+          </div>
+
+          {/* Interactive Scrubber (collapsible when active) */}
+          {isSliderMode && (
             <div className="scrubber-box">
               <div className="scrubber-meta">
                 <span className="scrubber-label">SCRUB TODAY'S TEMP</span>
@@ -250,13 +326,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <span>OPTIMAL 2-HOUR WINDOW</span>
             </div>
             <div className="window-time">
-              {activeScenario.windowTime} • {activeScenario.windowSub}
+              {dynamicWindowTime} • {dynamicWindowSub}
             </div>
           </div>
 
           <div className="mockup-footer">
             <div className="mockup-gear">
-              {activeScenario.gear.map((item, idx) => (
+              {dynamicGear.map((item, idx) => (
                 <span key={idx} className="gear-chip">
                   {item}
                 </span>
@@ -268,3 +344,4 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     </section>
   );
 };
+

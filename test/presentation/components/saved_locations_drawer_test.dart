@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:horizon/domain/entities/location_entity.dart';
 import 'package:horizon/domain/entities/settings_entity.dart';
 import 'package:horizon/domain/repositories/settings_repository.dart';
+import 'package:horizon/domain/usecases/detect_current_location.dart';
 import 'package:horizon/domain/usecases/search_locations.dart';
 import 'package:horizon/presentation/components/saved_locations_drawer.dart';
 import 'package:horizon/presentation/state/location_provider.dart';
@@ -46,6 +47,11 @@ class MockSearchLocations implements SearchLocations {
   }
 }
 
+class MockDetectCurrentLocation implements DetectCurrentLocation {
+  @override
+  Future<LocationEntity?> call() async => null;
+}
+
 void main() {
   group('SavedLocationsDrawer Tests', () {
     late LocationNotifier locationNotifier;
@@ -53,9 +59,11 @@ void main() {
     setUp(() {
       final repo = MockSettingsRepository();
       final search = MockSearchLocations();
+      final detect = MockDetectCurrentLocation();
       locationNotifier = LocationNotifier(
         settingsRepository: repo,
         searchLocations: search,
+        detectCurrentLocation: detect,
       );
     });
 

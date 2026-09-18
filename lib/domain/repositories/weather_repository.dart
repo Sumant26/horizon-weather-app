@@ -14,4 +14,6 @@ abstract class WeatherRepository {
   });
 
   Future<List<LocationEntity>> searchLocations(String query);
+
+  Future<LocationEntity?> detectCurrentLocation();
 }

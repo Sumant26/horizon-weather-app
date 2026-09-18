@@ -159,6 +159,88 @@ class _SavedLocationsDrawerState extends State<SavedLocationsDrawer> {
                   ),
                 ),
 
+                // Quick Action: Detect Live Location Button
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(14),
+                      onTap: state.isLocating
+                          ? null
+                          : () async {
+                              HapticFeedbackHelper.selection();
+                              await widget.locationNotifier
+                                  .detectCurrentLocation(autoSelect: true);
+                              if (context.mounted) Navigator.pop(context);
+                            },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 11),
+                        decoration: BoxDecoration(
+                          color: AppColors.twilightCyan.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color:
+                                AppColors.twilightCyan.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            if (state.isLocating)
+                              const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColors.twilightCyan,
+                                ),
+                              )
+                            else
+                              const Icon(
+                                Icons.near_me_rounded,
+                                color: AppColors.twilightCyan,
+                                size: 18,
+                              ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    state.isLocating
+                                        ? 'Detecting Current Location...'
+                                        : 'Use My Current Location',
+                                    style: const TextStyle(
+                                      color: AppColors.twilightCyan,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 1),
+                                  const Text(
+                                    'GPS & Keyless IP Microclimate Node',
+                                    style: TextStyle(
+                                      color: Colors.white54,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              color: AppColors.twilightCyan,
+                              size: 13,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
                 // Search Bar
                 Padding(
                   padding:
@@ -382,11 +464,16 @@ class _SavedLocationsDrawerState extends State<SavedLocationsDrawer> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Icon(
-                          isActive
-                              ? Icons.check_circle_rounded
-                              : Icons.location_on_outlined,
-                          color:
-                              isActive ? AppColors.honeyGold : Colors.white60,
+                          loc.isCurrentLocation
+                              ? Icons.near_me_rounded
+                              : (isActive
+                                  ? Icons.check_circle_rounded
+                                  : Icons.location_on_outlined),
+                          color: loc.isCurrentLocation
+                              ? AppColors.twilightCyan
+                              : (isActive
+                                  ? AppColors.honeyGold
+                                  : Colors.white60),
                           size: 18,
                         ),
                       ),
@@ -395,27 +482,58 @@ class _SavedLocationsDrawerState extends State<SavedLocationsDrawer> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              loc.name,
-                              style: TextStyle(
-                                color: isActive
-                                    ? AppColors.honeyGold
-                                    : Colors.white,
-                                fontSize: 15,
-                                fontWeight: isActive
-                                    ? FontWeight.w600
-                                    : FontWeight.w400,
-                              ),
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    loc.name,
+                                    style: TextStyle(
+                                      color: isActive
+                                          ? AppColors.honeyGold
+                                          : Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: isActive
+                                          ? FontWeight.w600
+                                          : FontWeight.w400,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                if (loc.isCurrentLocation) ...[
+                                  const SizedBox(width: 6),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5, vertical: 1.5),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.twilightCyan
+                                          .withValues(alpha: 0.15),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: const Text(
+                                      'GPS LIVE',
+                                      style: TextStyle(
+                                        color: AppColors.twilightCyan,
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 0.8,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ],
                             ),
                             if (loc.country != null &&
                                 loc.country!.isNotEmpty) ...[
                               const SizedBox(height: 2),
                               Text(
-                                loc.country!,
+                                [loc.admin1, loc.country]
+                                    .whereType<String>()
+                                    .join(', '),
                                 style: const TextStyle(
                                   color: Colors.white54,
                                   fontSize: 12,
                                 ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ],

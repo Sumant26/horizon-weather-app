@@ -410,53 +410,84 @@ h1, h2, h3, h4, .font-display {
   border-radius: 6px;
 }
 
-.mockup-node {
-  font-size: 0.72rem;
+.mockup-location-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.mockup-location-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.82rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  color: #ffffff;
+}
+
+.live-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+  display: inline-block;
+  animation: live-pulse 1.8s infinite ease-in-out;
+}
+
+@keyframes live-pulse {
+  0%, 100% {
+    transform: scale(0.9);
+    opacity: 0.6;
+    box-shadow: 0 0 4px #38bdf8;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+    box-shadow: 0 0 10px #38bdf8;
+  }
+}
+
+.mockup-location-sub {
+  font-size: 0.68rem;
   color: var(--text-muted);
 }
 
 .mockup-scenario-tabs {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   background: rgba(255, 255, 255, 0.04);
   padding: 3px;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.mockup-mode-switch {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  background: rgba(255, 255, 255, 0.04);
-  padding: 2px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.mode-btn {
-  background: none;
-  border: none;
+.scenario-pill {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
   color: var(--text-muted);
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 4px 9px;
+  border-radius: 5px;
   cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 4px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 4px;
   transition: all var(--transition-fast);
 }
 
-.mode-btn:hover {
+.scenario-pill:hover {
   color: #ffffff;
 }
 
-.mode-btn.active {
+.scenario-pill.active {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 .scrubber-box {

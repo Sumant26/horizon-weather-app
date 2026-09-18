@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/location_entity.dart';
 import '../../domain/repositories/settings_repository.dart';
+import '../../domain/usecases/detect_current_location.dart';
 import '../../domain/usecases/search_locations.dart';
 
 class LocationState {
@@ -8,12 +9,14 @@ class LocationState {
   final int activeIndex;
   final List<LocationEntity> searchResults;
   final bool isSearching;
+  final bool isLocating;
 
   const LocationState({
     required this.savedLocations,
     this.activeIndex = 0,
     this.searchResults = const [],
     this.isSearching = false,
+    this.isLocating = false,
   });
 
   LocationEntity get activeLocation {
@@ -27,12 +30,14 @@ class LocationState {
     int? activeIndex,
     List<LocationEntity>? searchResults,
     bool? isSearching,
+    bool? isLocating,
   }) {
     return LocationState(
       savedLocations: savedLocations ?? this.savedLocations,
       activeIndex: activeIndex ?? this.activeIndex,
       searchResults: searchResults ?? this.searchResults,
       isSearching: isSearching ?? this.isSearching,
+      isLocating: isLocating ?? this.isLocating,
     );
   }
 }
@@ -40,12 +45,15 @@ class LocationState {
 class LocationNotifier extends ValueNotifier<LocationState> {
   final SettingsRepository _settingsRepository;
   final SearchLocations _searchLocations;
+  final DetectCurrentLocation _detectCurrentLocation;
 
   LocationNotifier({
     required SettingsRepository settingsRepository,
     required SearchLocations searchLocations,
+    required DetectCurrentLocation detectCurrentLocation,
   })  : _settingsRepository = settingsRepository,
         _searchLocations = searchLocations,
+        _detectCurrentLocation = detectCurrentLocation,
         super(const LocationState(
             savedLocations: LocationEntity.defaultSavedLocations)) {
     _loadLocations();
@@ -58,6 +66,45 @@ class LocationNotifier extends ValueNotifier<LocationState> {
       savedLocations: saved,
       activeIndex: index.clamp(0, saved.isEmpty ? 0 : saved.length - 1),
     );
+  }
+
+  Future<void> detectCurrentLocation({bool autoSelect = true}) async {
+    value = value.copyWith(isLocating: true);
+    try {
+      final detected = await _detectCurrentLocation();
+      if (detected != null) {
+        final currentIdx = value.savedLocations.indexWhere(
+          (loc) =>
+              loc.isCurrentLocation ||
+              ((loc.latitude - detected.latitude).abs() < 0.05 &&
+                  (loc.longitude - detected.longitude).abs() < 0.05),
+        );
+
+        List<LocationEntity> updated;
+        int targetIndex;
+
+        if (currentIdx != -1) {
+          updated = List<LocationEntity>.from(value.savedLocations);
+          updated[currentIdx] = detected;
+          targetIndex = autoSelect ? currentIdx : value.activeIndex;
+        } else {
+          updated = [detected, ...value.savedLocations];
+          targetIndex = autoSelect ? 0 : value.activeIndex + 1;
+        }
+
+        value = value.copyWith(
+          savedLocations: updated,
+          activeIndex: targetIndex,
+          isLocating: false,
+        );
+        await _settingsRepository.saveLocations(updated);
+        await _settingsRepository.saveActiveLocationIndex(targetIndex);
+        return;
+      }
+    } catch (_) {
+      // Graceful degradation
+    }
+    value = value.copyWith(isLocating: false);
   }
 
   Future<void> setActiveLocation(int index) async {

@@ -15,6 +15,7 @@ abstract class RemoteWeatherDatasource {
   Future<Map<String, dynamic>> getAirQuality(
       {required double latitude, required double longitude});
   Future<List<Map<String, dynamic>>> searchLocations(String query);
+  Future<Map<String, dynamic>?> detectCurrentLocation();
 }
 
 class RemoteWeatherDatasourceImpl implements RemoteWeatherDatasource {
@@ -125,5 +126,62 @@ class RemoteWeatherDatasourceImpl implements RemoteWeatherDatasource {
       if (e is ServerException) rethrow;
       throw NetworkException(e.toString());
     }
+  }
+
+  @override
+  Future<Map<String, dynamic>?> detectCurrentLocation() async {
+    // 1. Try Primary IP Geolocation endpoint
+    try {
+      final uri = ApiEndpoints.ipLocationPrimary();
+      AppLogger.debug('Detecting current location from $uri');
+      final response =
+          await _client.get(uri).timeout(const Duration(seconds: 6));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as Map<String, dynamic>;
+        final city = data['city'] as String?;
+        final lat = data['latitude'] as num?;
+        final lon = data['longitude'] as num?;
+        if (city != null && lat != null && lon != null) {
+          return {
+            'name': city,
+            'admin1': data['region'] as String?,
+            'country': data['country_name'] as String?,
+            'latitude': lat.toDouble(),
+            'longitude': lon.toDouble(),
+            'is_current': true,
+          };
+        }
+      }
+    } catch (e) {
+      AppLogger.warning('Primary IP geolocation failed: $e. Trying fallback.');
+    }
+
+    // 2. Try Fallback IP Geolocation endpoint
+    try {
+      final uri = ApiEndpoints.ipLocationSecondary();
+      AppLogger.debug('Detecting current location fallback from $uri');
+      final response =
+          await _client.get(uri).timeout(const Duration(seconds: 6));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as Map<String, dynamic>;
+        final city = data['cityName'] as String?;
+        final lat = data['latitude'] as num?;
+        final lon = data['longitude'] as num?;
+        if (city != null && lat != null && lon != null) {
+          return {
+            'name': city,
+            'admin1': data['regionName'] as String?,
+            'country': data['countryName'] as String?,
+            'latitude': lat.toDouble(),
+            'longitude': lon.toDouble(),
+            'is_current': true,
+          };
+        }
+      }
+    } catch (e) {
+      AppLogger.warning('Fallback IP geolocation failed: $e');
+    }
+
+    return null;
   }
 }

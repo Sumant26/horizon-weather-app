@@ -17,7 +17,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Brand */}
         <div className="navbar-brand">
           <img
-            src="/assets/app_logo.jpg"
+            src="/assets/app_logo.jpg?v=2"
             alt="Horizon Logo"
             className="navbar-logo"
             width={34}
