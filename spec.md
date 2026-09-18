@@ -110,3 +110,12 @@ Automated verification on every pull request and push to `main`:
 - **Compact 2x2 Glance**: Immediate temperature reading, location title, and comparative delta indicator (`-2.8° Cooler`).
 - **Wide 4x2 Dashboard**: Bioclimatic comfort corridor (`07:00 – 09:00 AM`), night sky clarity score, and minimal gear checklist.
 
+### 5.5 Atmospheric Canvas Backdrop (Web)
+- **Isolated `<canvas>` Layer**: Low-overhead ambient particle animation using `requestAnimationFrame` and device-pixel-ratio scaling.
+- **Ambient Stardust & Mist**: 36 non-distracting particles drifting gently behind the hero container with soft opacity pulsing.
+
+### 5.6 Scrubbable "Yesterday vs Today" Temperature Slider (Web)
+- **Continuous Real-Time Delta Engine**: Interactive dual-mode slider allowing visitors to scrub between 16°C and 34°C against yesterday's baseline (25.2°C).
+- **Dynamic Color & Sentiment Interpolation**: Automatically maps negative deltas to **Twilight Cyan (`#38BDF8`)**, positive deltas to **Sunset Ember (`#D97757`)**, and zero delta to **Calming Sage (`#7E9F8E`)** with real-time editorial summary recalculation.
+
+
