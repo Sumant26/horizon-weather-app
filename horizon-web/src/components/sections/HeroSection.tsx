@@ -26,6 +26,15 @@ import {
 interface HeroSectionProps {
   onDownloadClick: () => void;
   onExploreFeatures: () => void;
+  locationName?: string;
+  microclimate?: string;
+  yesterday?: DaySnapshot;
+  today?: DaySnapshot;
+  tomorrow?: DaySnapshot;
+  liveData?: LiveWeatherData | null;
+  isLocating?: boolean;
+  locationError?: string | null;
+  onRefreshWeather?: () => void;
 }
 
 const DEFAULT_YESTERDAY: DaySnapshot = {
@@ -88,37 +97,62 @@ const DEFAULT_TOMORROW: DaySnapshot = {
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onDownloadClick,
   onExploreFeatures,
+  locationName: propLocationName,
+  microclimate: propMicroclimate,
+  yesterday: propYesterday,
+  today: propToday,
+  tomorrow: propTomorrow,
+  liveData: propLiveData,
+  isLocating: propIsLocating,
+  locationError: propLocationError,
+  onRefreshWeather: propOnRefreshWeather,
 }) => {
   const [selectedDayId, setSelectedDayId] = useState<'yesterday' | 'today' | 'tomorrow'>('today');
   const [isSliderMode, setIsSliderMode] = useState(false);
-  const [scrubbedTemp, setScrubbedTemp] = useState<number>(22.4);
-  const [liveData, setLiveData] = useState<LiveWeatherData | null>(null);
-  const [isLocating, setIsLocating] = useState(false);
-  const [locationError, setLocationError] = useState<string | null>(null);
+  const [internalLiveData, setInternalLiveData] = useState<LiveWeatherData | null>(null);
+  const [internalIsLocating, setInternalIsLocating] = useState(false);
+  const [internalLocationError, setInternalLocationError] = useState<string | null>(null);
+
+  const activeLiveData = propLiveData !== undefined ? propLiveData : internalLiveData;
+  const isLocating = propIsLocating !== undefined ? propIsLocating : internalIsLocating;
+  const locationError = propLocationError !== undefined ? propLocationError : internalLocationError;
+
+  const yesterdaySnapshot = propYesterday ?? activeLiveData?.yesterday ?? DEFAULT_YESTERDAY;
+  const todaySnapshot = propToday ?? activeLiveData?.today ?? DEFAULT_TODAY;
+  const tomorrowSnapshot = propTomorrow ?? activeLiveData?.tomorrow ?? DEFAULT_TOMORROW;
+
+  const [scrubbedTemp, setScrubbedTemp] = useState<number>(todaySnapshot.temperature);
 
   const loadUserLocationWeather = useCallback(async () => {
-    setIsLocating(true);
-    setLocationError(null);
+    if (propOnRefreshWeather) {
+      propOnRefreshWeather();
+      return;
+    }
+    setInternalIsLocating(true);
+    setInternalLocationError(null);
     try {
       const data = await fetchUserLiveWeather();
-      setLiveData(data);
+      setInternalLiveData(data);
       setScrubbedTemp(data.today.temperature);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Location detection unavailable';
-      setLocationError(msg);
+      setInternalLocationError(msg);
     } finally {
-      setIsLocating(false);
+      setInternalIsLocating(false);
     }
-  }, []);
+  }, [propOnRefreshWeather]);
 
   useEffect(() => {
-    loadUserLocationWeather();
-  }, [loadUserLocationWeather]);
+    if (propLiveData === undefined && propToday === undefined) {
+      loadUserLocationWeather();
+    }
+  }, [loadUserLocationWeather, propLiveData, propToday]);
 
-  // Current active snapshots from live data or graceful fallback
-  const yesterdaySnapshot = liveData?.yesterday ?? DEFAULT_YESTERDAY;
-  const todaySnapshot = liveData?.today ?? DEFAULT_TODAY;
-  const tomorrowSnapshot = liveData?.tomorrow ?? DEFAULT_TOMORROW;
+  useEffect(() => {
+    if (todaySnapshot.temperature) {
+      setScrubbedTemp(todaySnapshot.temperature);
+    }
+  }, [todaySnapshot.temperature]);
 
   const activeDaySnapshot: DaySnapshot =
     selectedDayId === 'yesterday'
@@ -157,8 +191,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         : '"Mild, steady temperature closely matching yesterday. Ideal comfort window for outdoor activities."';
   }
 
-  const locationTitle = liveData?.locationName ?? (isLocating ? 'Detecting your city...' : 'Your Location');
-  const microclimateTitle = liveData?.microclimate ?? (locationError ? 'GPS Permission Needed' : 'Local Microclimate');
+  const locationTitle =
+    propLocationName ??
+    activeLiveData?.locationName ??
+    (isLocating ? 'Detecting your city...' : 'Your Location');
+
+  const microclimateTitle =
+    propMicroclimate ??
+    activeLiveData?.microclimate ??
+    (locationError ? 'GPS Permission Needed' : 'Local Microclimate');
 
   return (
     <section className="hero-section">
@@ -180,7 +221,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         {/* Subtitle */}
         <p className="hero-desc">
           Most weather apps overwhelm with complex charts and raw decimals. Horizon tells you what matters at a glance:
-          <strong className="text-white"> how today compares to yesterday and tomorrow</strong>, your best 2-hour outdoor window, and only the gear you need.
+          <strong className="text-white"> how today compares to yesterday and tomorrow</strong> in {locationTitle}, your best 2-hour outdoor window, and only the gear you need.
         </p>
 
         {/* CTA Buttons */}
@@ -195,7 +236,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </button>
         </div>
 
-        {/* Quick Editorial Glance Metrics for Today */}
+        {/* Quick Editorial Glance Metrics for User's Location */}
         <div className="hero-stats-grid">
           <div className="hero-stat-card">
             <span
@@ -240,13 +281,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <div className="mockup-location-title">
                   <MapPin size={13} className="text-sage" />
                   <span className="city-title-text">{locationTitle}</span>
-                  {liveData && <span className="live-pulse-dot" title="Live Location Connected" />}
+                  {activeLiveData && <span className="live-pulse-dot" title="Live Location Connected" />}
                 </div>
                 <span className="mockup-location-sub">{microclimateTitle}</span>
               </div>
             </div>
 
-            {/* Location Refresh & Day Controls */}
+            {/* Location Refresh & Actions */}
             <div className="mockup-header-actions">
               <button
                 onClick={loadUserLocationWeather}

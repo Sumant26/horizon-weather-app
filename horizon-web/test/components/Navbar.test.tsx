@@ -19,6 +19,23 @@ describe('Navbar Component', () => {
     expect(screen.getByText('Source')).toBeInTheDocument();
   });
 
+  it('renders location and temperature pill when locationName is provided', () => {
+    const onDownload = vi.fn();
+    const onFeatures = vi.fn();
+
+    render(
+      <Navbar
+        onScrollToDownload={onDownload}
+        onScrollToFeatures={onFeatures}
+        locationName="Tokyo, Japan"
+        currentTemp={21.4}
+      />,
+    );
+
+    expect(screen.getByText('Tokyo')).toBeInTheDocument();
+    expect(screen.getByText('21.4°')).toBeInTheDocument();
+  });
+
   it('triggers callback when clicking Get App button', () => {
     const onDownload = vi.fn();
     const onFeatures = vi.fn();

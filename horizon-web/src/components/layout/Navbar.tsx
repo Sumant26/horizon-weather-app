@@ -1,15 +1,19 @@
 import React from 'react';
-import { Download, Github } from 'lucide-react';
+import { Download, Github, MapPin } from 'lucide-react';
 import { APP_METADATA } from '../../core/constants/theme';
 
 interface NavbarProps {
   onScrollToDownload: () => void;
   onScrollToFeatures: () => void;
+  locationName?: string;
+  currentTemp?: number;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   onScrollToDownload,
   onScrollToFeatures,
+  locationName,
+  currentTemp,
 }) => {
   return (
     <header className="navbar-container">
@@ -27,6 +31,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="navbar-title">HORIZON</span>
             <span className="navbar-version">{APP_METADATA.version}</span>
           </div>
+
+          {locationName && (
+            <div className="navbar-location-pill" title={`Live weather in ${locationName}`}>
+              <MapPin size={11} className="text-sage" />
+              <span className="navbar-city-name">{locationName.split(',')[0]}</span>
+              {currentTemp !== undefined && (
+                <span className="navbar-temp-tag">{currentTemp.toFixed(1)}°</span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Navigation Links */}
