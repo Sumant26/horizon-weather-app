@@ -1,0 +1,36 @@
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { HeroSection } from '../../src/components/sections/HeroSection';
+
+describe('HeroSection Component', () => {
+  it('renders headline and yesterday delta mockup', () => {
+    const onDownload = vi.fn();
+    const onExplore = vi.fn();
+
+    render(
+      <HeroSection
+        onDownloadClick={onDownload}
+        onExploreFeatures={onExplore}
+      />,
+    );
+
+    expect(screen.getByText(/Weather for/i)).toBeInTheDocument();
+    expect(screen.getByText('-2.8° Cooler')).toBeInTheDocument();
+    expect(screen.getByText('07:00 - 09:00 AM • High Comfort (Score 94)')).toBeInTheDocument();
+  });
+
+  it('triggers download button click', () => {
+    const onDownload = vi.fn();
+    const onExplore = vi.fn();
+
+    render(
+      <HeroSection
+        onDownloadClick={onDownload}
+        onExploreFeatures={onExplore}
+      />,
+    );
+
+    fireEvent.click(screen.getByText('Download for Android / iOS'));
+    expect(onDownload).toHaveBeenCalledTimes(1);
+  });
+});

@@ -1,0 +1,12 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🛡️ Running Horizon Pre-commit Quality Checks..."
+
+# 1. Typecheck
+npm run typecheck || { echo "❌ TypeScript typecheck failed."; exit 1; }
+
+# 2. Automated Tests
+npm test || { echo "❌ Unit & Component tests failed."; exit 1; }
+
+echo "✅ All pre-commit checks passed successfully!"

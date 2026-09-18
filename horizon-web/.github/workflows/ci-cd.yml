@@ -1,0 +1,43 @@
+name: Horizon Web CI/CD
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  validate-and-build:
+    name: Lint, Test & Build
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: horizon-web/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: horizon-web
+        run: npm ci
+
+      - name: Verify TypeScript Types
+        working-directory: horizon-web
+        run: npm run typecheck
+
+      - name: Run Test Suite
+        working-directory: horizon-web
+        run: npm test
+
+      - name: Build Production Bundle
+        working-directory: horizon-web
+        run: npm run build
