@@ -453,41 +453,148 @@ h1, h2, h3, h4, .font-display {
   color: var(--text-muted);
 }
 
-.mockup-scenario-tabs {
+.mockup-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.location-refresh-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  background: rgba(255, 255, 255, 0.04);
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.location-refresh-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.three-day-tab-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.035);
   padding: 3px;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 12px;
+  width: 100%;
 }
 
-.scenario-pill {
+.day-tab-pill {
+  flex: 1;
   font-family: var(--font-sans);
-  font-size: 0.72rem;
+  font-size: 0.73rem;
   font-weight: 500;
   color: var(--text-muted);
   background: transparent;
   border: none;
   outline: none;
-  padding: 4px 9px;
-  border-radius: 5px;
+  padding: 6px 8px;
+  border-radius: 6px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 5px;
   transition: all var(--transition-fast);
 }
 
-.scenario-pill:hover {
+.day-tab-pill:hover {
   color: #ffffff;
+  background: rgba(255, 255, 255, 0.04);
 }
 
-.scenario-pill.active {
+.day-tab-pill.active {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.scrub-tab-pill {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+}
+
+.city-title-text {
+  font-weight: 600;
+  max-width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.horizon-spectrum-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.spectrum-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.spectrum-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.spectrum-card.active-day {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.spectrum-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+.spectrum-label {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.spectrum-date {
+  font-size: 0.62rem;
+  opacity: 0.75;
+}
+
+.spectrum-temp {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.spectrum-sub {
+  font-size: 0.66rem;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .scrubber-box {

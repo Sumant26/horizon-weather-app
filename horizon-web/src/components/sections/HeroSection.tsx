@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Download,
   Compass,
@@ -8,156 +8,157 @@ import {
   Minus,
   Sliders,
   MapPin,
-  Navigation,
+  RotateCw,
   Loader2,
+  Calendar,
+  Sun,
+  CloudSun,
 } from 'lucide-react';
 import { Badge } from '../ui/Badge';
 import { GlassCard } from '../ui/GlassCard';
 import { AtmosphericCanvas } from '../ui/AtmosphericCanvas';
-import { fetchUserLiveWeather, LiveWeatherData } from '../../domain/services/live_weather_service';
+import {
+  fetchUserLiveWeather,
+  LiveWeatherData,
+  DaySnapshot,
+} from '../../domain/services/live_weather_service';
 
 interface HeroSectionProps {
   onDownloadClick: () => void;
   onExploreFeatures: () => void;
 }
 
-interface TempScenario {
-  id: string;
-  name: string;
-  location: string;
-  microclimate: string;
-  temp: number;
-  yesterdayTemp: number;
-  summary: string;
-  windowTime: string;
-  windowSub: string;
-  gear: string[];
-}
+const DEFAULT_YESTERDAY: DaySnapshot = {
+  id: 'yesterday',
+  dateLabel: 'Yesterday',
+  dateStr: 'Past 24h',
+  temperature: 25.2,
+  tempMin: 18.0,
+  tempMax: 27.5,
+  feelsLike: 25.2,
+  weatherCode: 0,
+  conditionName: 'Clear Skies',
+  deltaLabel: 'Baseline historical reference',
+  deltaValue: 0,
+  deltaType: 'mild',
+  summary: '"Recorded baseline temperature with clear conditions over your location."',
+  optimalWindow: '08:00 – 10:00 AM',
+  optimalSub: 'Historical Peak Clarity',
+  gear: ['🕶️ Sunglasses', '💧 Water Bottle'],
+};
 
-const SCENARIOS: TempScenario[] = [
-  {
-    id: 'cool',
-    name: 'Morning Crisp',
-    location: 'San Francisco, CA',
-    microclimate: 'Pacific Heights • 82m Elev',
-    temp: 22.4,
-    yesterdayTemp: 25.2,
-    summary:
-      '"Crisp morning breeze with gentle warming towards noon. A quiet, comfortable window for a morning walk."',
-    windowTime: '07:00 – 09:00 AM',
-    windowSub: 'Gentle Breeze • Comfort 94',
-    gear: ['🕶️ Sunglasses', '🧥 Light Windbreaker', '💧 Water Bottle'],
-  },
-  {
-    id: 'warm',
-    name: 'Afternoon Sun',
-    location: 'Austin, TX',
-    microclimate: 'Zilker Park • High UV Index',
-    temp: 29.1,
-    yesterdayTemp: 25.7,
-    summary:
-      '"Warm solar peak with high UV index. Plan outdoor exertion before 11 AM or seek shaded canopy."',
-    windowTime: '08:30 – 10:30 AM',
-    windowSub: 'Low UV Window • Comfort 88',
-    gear: ['🧢 Sun Cap', '🧴 SPF 50', '💧 Hydration Pack'],
-  },
-  {
-    id: 'mild',
-    name: 'Quiet Dusk',
-    location: 'Oslo, Norway',
-    microclimate: 'Frogner Park • Clear Atmosphere',
-    temp: 19.8,
-    yesterdayTemp: 19.8,
-    summary:
-      '"Still air and crystal atmospheric clarity. Perfect conditions for evening stargazing and porch reading."',
-    windowTime: '06:00 – 08:00 PM',
-    windowSub: '94% Sky Transparency',
-    gear: ['🧣 Light Layer', '☕ Hot Drink', '🔭 Clear Sky'],
-  },
-];
+const DEFAULT_TODAY: DaySnapshot = {
+  id: 'today',
+  dateLabel: 'Today',
+  dateStr: 'Live',
+  temperature: 22.4,
+  tempMin: 16.5,
+  tempMax: 26.0,
+  feelsLike: 21.8,
+  weatherCode: 1,
+  conditionName: 'Partly Cloudy',
+  deltaLabel: '-2.8° Cooler than yesterday',
+  deltaValue: -2.8,
+  deltaType: 'cool',
+  summary: '"Crisp morning breeze with gentle warming towards noon. A quiet, comfortable window for outdoor activity."',
+  optimalWindow: '07:00 – 09:00 AM',
+  optimalSub: 'Gentle Breeze • Comfort 94',
+  gear: ['🕶️ Sunglasses', '🧥 Light Windbreaker', '💧 Water Bottle'],
+};
+
+const DEFAULT_TOMORROW: DaySnapshot = {
+  id: 'tomorrow',
+  dateLabel: 'Tomorrow',
+  dateStr: 'Forecast',
+  temperature: 23.8,
+  tempMin: 17.0,
+  tempMax: 27.0,
+  feelsLike: 23.5,
+  weatherCode: 0,
+  conditionName: 'Sunny & Clear',
+  deltaLabel: '+1.4° Warmer than today',
+  deltaValue: 1.4,
+  deltaType: 'warm',
+  summary: '"Warmer solar trend continuing into tomorrow. Great outdoor conditions expected all morning."',
+  optimalWindow: '07:30 – 09:30 AM',
+  optimalSub: 'Comfort Index 92',
+  gear: ['🧢 Sun Cap', '🕶️ Sunglasses', '💧 Hydration Pack'],
+};
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onDownloadClick,
   onExploreFeatures,
 }) => {
-  const [activeScenario, setActiveScenario] = useState<TempScenario>(SCENARIOS[0]);
+  const [selectedDayId, setSelectedDayId] = useState<'yesterday' | 'today' | 'tomorrow'>('today');
   const [isSliderMode, setIsSliderMode] = useState(false);
-  const [currentTemp, setCurrentTemp] = useState<number>(22.4);
+  const [scrubbedTemp, setScrubbedTemp] = useState<number>(22.4);
   const [liveData, setLiveData] = useState<LiveWeatherData | null>(null);
   const [isLocating, setIsLocating] = useState(false);
-  const [isLiveActive, setIsLiveActive] = useState(false);
-  const yesterdayBase = 25.2;
+  const [locationError, setLocationError] = useState<string | null>(null);
 
-  const handleFetchMyLocation = async () => {
+  const loadUserLocationWeather = useCallback(async () => {
     setIsLocating(true);
-    setIsSliderMode(false);
+    setLocationError(null);
     try {
       const data = await fetchUserLiveWeather();
       setLiveData(data);
-      setIsLiveActive(true);
-    } catch {
-      // Keep active scenario if denied/failed
+      setScrubbedTemp(data.today.temperature);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Location detection unavailable';
+      setLocationError(msg);
     } finally {
       setIsLocating(false);
     }
-  };
+  }, []);
 
-  // Active values depending on mode
-  const displayLocation = isSliderMode
-    ? 'Local Microclimate'
-    : isLiveActive && liveData
-    ? liveData.locationName
-    : activeScenario.location;
+  useEffect(() => {
+    loadUserLocationWeather();
+  }, [loadUserLocationWeather]);
 
-  const displayMicroclimate = isSliderMode
-    ? 'Manual Live Simulation'
-    : isLiveActive && liveData
-    ? liveData.microclimate
-    : activeScenario.microclimate;
+  // Current active snapshots from live data or graceful fallback
+  const yesterdaySnapshot = liveData?.yesterday ?? DEFAULT_YESTERDAY;
+  const todaySnapshot = liveData?.today ?? DEFAULT_TODAY;
+  const tomorrowSnapshot = liveData?.tomorrow ?? DEFAULT_TOMORROW;
 
-  const displayTemp = isSliderMode
-    ? currentTemp
-    : isLiveActive && liveData
-    ? liveData.temperature
-    : activeScenario.temp;
+  const activeDaySnapshot: DaySnapshot =
+    selectedDayId === 'yesterday'
+      ? yesterdaySnapshot
+      : selectedDayId === 'tomorrow'
+      ? tomorrowSnapshot
+      : todaySnapshot;
 
-  const yesterdayRef = isSliderMode
-    ? yesterdayBase
-    : isLiveActive && liveData
-    ? liveData.yesterdayTemperature
-    : activeScenario.yesterdayTemp;
+  // Compute values for Today in Slider Mode vs Standard Live Mode
+  const displayedTemp =
+    isSliderMode && selectedDayId === 'today'
+      ? scrubbedTemp
+      : activeDaySnapshot.temperature;
 
-  const diffVal = parseFloat((displayTemp - yesterdayRef).toFixed(1));
+  const yesterdayRef = yesterdaySnapshot.temperature;
 
-  const deltaType: 'cool' | 'warm' | 'mild' =
-    diffVal < -0.1 ? 'cool' : diffVal > 0.1 ? 'warm' : 'mild';
+  let deltaFormatted = activeDaySnapshot.deltaLabel;
+  let deltaType: 'cool' | 'warm' | 'mild' = activeDaySnapshot.deltaType;
+  let dynamicSummary = activeDaySnapshot.summary;
 
-  const deltaFormatted =
-    diffVal < -0.1
-      ? `-${Math.abs(diffVal).toFixed(1)}° Cooler`
-      : diffVal > 0.1
-      ? `+${diffVal.toFixed(1)}° Warmer`
-      : '±0.0° Steady';
+  if (isSliderMode && selectedDayId === 'today') {
+    const diffVal = parseFloat((scrubbedTemp - yesterdayRef).toFixed(1));
+    deltaType = diffVal < -0.1 ? 'cool' : diffVal > 0.1 ? 'warm' : 'mild';
+    deltaFormatted =
+      diffVal < -0.1
+        ? `-${Math.abs(diffVal).toFixed(1)}° Cooler`
+        : diffVal > 0.1
+        ? `+${diffVal.toFixed(1)}° Warmer`
+        : '±0.0° Steady';
 
-  const deltaLabel = isSliderMode
-    ? `vs yesterday's ${yesterdayBase}°C`
-    : diffVal === 0
-    ? 'identical to yesterday'
-    : 'than yesterday at this hour';
+    dynamicSummary =
+      diffVal < -2.0
+        ? '"Noticeable cold front with brisk air. Layer up with a light jacket before stepping out."'
+        : diffVal > 2.0
+        ? '"Significant heat jump from yesterday. Stay hydrated and seek shade during peak midday hours."'
+        : '"Mild, steady temperature closely matching yesterday. Ideal comfort window for outdoor activities."';
+  }
 
-  const dynamicSummary = isSliderMode
-    ? diffVal < -2.0
-      ? '"Noticeable cold front with brisk air. Layer up with a light jacket before stepping out."'
-      : diffVal > 2.0
-      ? '"Significant heat jump from yesterday. Stay hydrated and seek shade during peak midday hours."'
-      : '"Mild, steady temperature closely matching yesterday. Ideal comfort window for outdoor activities."'
-    : isLiveActive && liveData
-    ? liveData.summary
-    : activeScenario.summary;
-
-  const dynamicWindowTime = isLiveActive && liveData ? liveData.optimalWindow : activeScenario.windowTime;
-  const dynamicWindowSub = isLiveActive && liveData ? liveData.optimalSub : activeScenario.windowSub;
-  const dynamicGear = isLiveActive && liveData ? liveData.gear : activeScenario.gear;
+  const locationTitle = liveData?.locationName ?? (isLocating ? 'Detecting your city...' : 'Your Location');
+  const microclimateTitle = liveData?.microclimate ?? (locationError ? 'GPS Permission Needed' : 'Local Microclimate');
 
   return (
     <section className="hero-section">
@@ -178,8 +179,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
         {/* Subtitle */}
         <p className="hero-desc">
-          Most weather apps overwhelm with raw radar maps and decimal points. Horizon tells you what matters in two seconds:
-          <strong className="text-white"> how today compares to yesterday</strong>, your best 2-hour outdoor window, and only the gear you need.
+          Most weather apps overwhelm with complex charts and raw decimals. Horizon tells you what matters at a glance:
+          <strong className="text-white"> how today compares to yesterday and tomorrow</strong>, your best 2-hour outdoor window, and only the gear you need.
         </p>
 
         {/* CTA Buttons */}
@@ -194,19 +195,29 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </button>
         </div>
 
-        {/* Quick Editorial Glance Metrics */}
+        {/* Quick Editorial Glance Metrics for Today */}
         <div className="hero-stats-grid">
           <div className="hero-stat-card">
-            <span className="hero-stat-number text-cool">-2.8°C</span>
-            <span className="hero-stat-label">vs yesterday</span>
+            <span
+              className={`hero-stat-number ${
+                todaySnapshot.deltaValue < -0.1
+                  ? 'text-cool'
+                  : todaySnapshot.deltaValue > 0.1
+                  ? 'text-warm'
+                  : ''
+              }`}
+            >
+              {todaySnapshot.deltaValue > 0 ? `+${todaySnapshot.deltaValue.toFixed(1)}°` : `${todaySnapshot.deltaValue.toFixed(1)}°`}
+            </span>
+            <span className="hero-stat-label">today vs yesterday</span>
           </div>
           <div className="hero-stat-card">
-            <span className="hero-stat-number">07:00 AM</span>
+            <span className="hero-stat-number">{todaySnapshot.optimalWindow.split('–')[0]?.trim() || '07:30 AM'}</span>
             <span className="hero-stat-label">Best comfort window</span>
           </div>
           <div className="hero-stat-card">
-            <span className="hero-stat-number">94%</span>
-            <span className="hero-stat-label">Night sky clarity</span>
+            <span className="hero-stat-number">{tomorrowSnapshot.temperature.toFixed(1)}°</span>
+            <span className="hero-stat-label">tomorrow forecast</span>
           </div>
         </div>
       </div>
@@ -228,83 +239,105 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <div className="mockup-location-group">
                 <div className="mockup-location-title">
                   <MapPin size={13} className="text-sage" />
-                  <span>{displayLocation}</span>
-                  {isLiveActive && <span className="live-pulse-dot" title="Live GPS Connected" />}
+                  <span className="city-title-text">{locationTitle}</span>
+                  {liveData && <span className="live-pulse-dot" title="Live Location Connected" />}
                 </div>
-                <span className="mockup-location-sub">{displayMicroclimate}</span>
+                <span className="mockup-location-sub">{microclimateTitle}</span>
               </div>
             </div>
 
-            {/* Seamless Segmented Control */}
-            <div className="mockup-scenario-tabs">
+            {/* Location Refresh & Day Controls */}
+            <div className="mockup-header-actions">
               <button
-                onClick={handleFetchMyLocation}
-                className={`scenario-pill ${isLiveActive && !isSliderMode ? 'active' : ''}`}
-                title="Detect live weather at your current location"
+                onClick={loadUserLocationWeather}
+                className="location-refresh-btn"
+                title="Refresh live weather for your location"
                 disabled={isLocating}
               >
                 {isLocating ? (
-                  <Loader2 size={12} className="spinner" />
+                  <Loader2 size={13} className="spinner" />
                 ) : (
-                  <Navigation size={12} className={isLiveActive ? 'text-cyan' : ''} />
+                  <RotateCw size={13} />
                 )}
-                <span>{isLocating ? 'Locating...' : 'My Location'}</span>
-              </button>
-
-              {SCENARIOS.map((scenario) => (
-                <button
-                  key={scenario.id}
-                  onClick={() => {
-                    setActiveScenario(scenario);
-                    setIsLiveActive(false);
-                    setIsSliderMode(false);
-                  }}
-                  className={`scenario-pill ${activeScenario.id === scenario.id && !isSliderMode && !isLiveActive ? 'active' : ''}`}
-                >
-                  {scenario.name}
-                </button>
-              ))}
-
-              <button
-                onClick={() => {
-                  setIsSliderMode(!isSliderMode);
-                  setIsLiveActive(false);
-                }}
-                className={`scenario-pill ${isSliderMode ? 'active' : ''}`}
-                title="Interactive Temperature Scrubber"
-              >
-                <Sliders size={12} />
-                <span>Scrub</span>
               </button>
             </div>
           </div>
 
+          {/* 3-Day Perspective Selector: Yesterday / Today / Tomorrow / Scrub */}
+          <div className="three-day-tab-bar">
+            <button
+              onClick={() => {
+                setSelectedDayId('yesterday');
+                setIsSliderMode(false);
+              }}
+              className={`day-tab-pill ${selectedDayId === 'yesterday' && !isSliderMode ? 'active' : ''}`}
+            >
+              <Calendar size={11} />
+              <span>Yesterday</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setSelectedDayId('today');
+                setIsSliderMode(false);
+              }}
+              className={`day-tab-pill ${selectedDayId === 'today' && !isSliderMode ? 'active' : ''}`}
+            >
+              <Sun size={11} />
+              <span>Today (Live)</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setSelectedDayId('tomorrow');
+                setIsSliderMode(false);
+              }}
+              className={`day-tab-pill ${selectedDayId === 'tomorrow' && !isSliderMode ? 'active' : ''}`}
+            >
+              <CloudSun size={11} />
+              <span>Tomorrow</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setSelectedDayId('today');
+                setIsSliderMode(!isSliderMode);
+              }}
+              className={`day-tab-pill scrub-tab-pill ${isSliderMode ? 'active' : ''}`}
+              title="Interactive Temperature Scrubber"
+            >
+              <Sliders size={11} />
+              <span>Scrub</span>
+            </button>
+          </div>
+
           {/* Interactive Scrubber (collapsible when active) */}
-          {isSliderMode && (
+          {isSliderMode && selectedDayId === 'today' && (
             <div className="scrubber-box">
               <div className="scrubber-meta">
                 <span className="scrubber-label">SCRUB TODAY'S TEMP</span>
-                <span className="scrubber-val">{currentTemp.toFixed(1)}°C</span>
+                <span className="scrubber-val">{scrubbedTemp.toFixed(1)}°C</span>
               </div>
               <input
                 type="range"
                 min="16.0"
                 max="34.0"
                 step="0.1"
-                value={currentTemp}
-                onChange={(e) => setCurrentTemp(parseFloat(e.target.value))}
+                value={scrubbedTemp}
+                onChange={(e) => setScrubbedTemp(parseFloat(e.target.value))}
                 className="temp-slider-input"
               />
               <div className="scrubber-scale">
                 <span>16°C (Brisk)</span>
-                <span>Yesterday: 25.2°C</span>
+                <span>Yesterday: {yesterdayRef.toFixed(1)}°C</span>
                 <span>34°C (Hot)</span>
               </div>
             </div>
           )}
 
+          {/* Main Temperature Display */}
           <div className="mockup-hero-temp">
-            <div className="mockup-temp-main">{displayTemp.toFixed(1)}°</div>
+            <div className="mockup-temp-main">{displayedTemp.toFixed(1)}°</div>
             <div className="mockup-temp-delta">
               <span className={`delta-badge delta-${deltaType}`}>
                 {deltaType === 'cool' && <ArrowDownRight size={14} />}
@@ -312,27 +345,94 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 {deltaType === 'mild' && <Minus size={14} />}
                 {deltaFormatted}
               </span>
-              <span className="delta-sub">{deltaLabel}</span>
+              <span className="delta-sub">
+                {selectedDayId === 'yesterday'
+                  ? 'Historical baseline'
+                  : selectedDayId === 'tomorrow'
+                  ? 'vs today at this hour'
+                  : isSliderMode
+                  ? `vs yesterday's ${yesterdayRef.toFixed(1)}°C`
+                  : 'vs yesterday at this hour'}
+              </span>
             </div>
           </div>
 
+          {/* 3-Day Horizon Spectrum Strip */}
+          <div className="horizon-spectrum-strip">
+            <div
+              onClick={() => {
+                setSelectedDayId('yesterday');
+                setIsSliderMode(false);
+              }}
+              className={`spectrum-card ${selectedDayId === 'yesterday' ? 'active-day' : ''}`}
+            >
+              <div className="spectrum-head">
+                <span className="spectrum-label">Yesterday</span>
+                <span className="spectrum-date">{yesterdaySnapshot.dateStr}</span>
+              </div>
+              <div className="spectrum-temp">{yesterdaySnapshot.temperature.toFixed(1)}°</div>
+              <div className="spectrum-sub">Baseline</div>
+            </div>
+
+            <div
+              onClick={() => {
+                setSelectedDayId('today');
+                setIsSliderMode(false);
+              }}
+              className={`spectrum-card ${selectedDayId === 'today' ? 'active-day' : ''}`}
+            >
+              <div className="spectrum-head">
+                <span className="spectrum-label">Today</span>
+                <span className="spectrum-date">{todaySnapshot.dateStr}</span>
+              </div>
+              <div className="spectrum-temp">{todaySnapshot.temperature.toFixed(1)}°</div>
+              <div className={`spectrum-sub text-${todaySnapshot.deltaType}`}>
+                {todaySnapshot.deltaValue > 0
+                  ? `+${todaySnapshot.deltaValue.toFixed(1)}°`
+                  : `${todaySnapshot.deltaValue.toFixed(1)}°`}
+              </div>
+            </div>
+
+            <div
+              onClick={() => {
+                setSelectedDayId('tomorrow');
+                setIsSliderMode(false);
+              }}
+              className={`spectrum-card ${selectedDayId === 'tomorrow' ? 'active-day' : ''}`}
+            >
+              <div className="spectrum-head">
+                <span className="spectrum-label">Tomorrow</span>
+                <span className="spectrum-date">{tomorrowSnapshot.dateStr}</span>
+              </div>
+              <div className="spectrum-temp">{tomorrowSnapshot.temperature.toFixed(1)}°</div>
+              <div className={`spectrum-sub text-${tomorrowSnapshot.deltaType}`}>
+                {tomorrowSnapshot.deltaValue > 0
+                  ? `+${tomorrowSnapshot.deltaValue.toFixed(1)}°`
+                  : `${tomorrowSnapshot.deltaValue.toFixed(1)}°`}
+              </div>
+            </div>
+          </div>
+
+          {/* Human-first Narrative Summary */}
           <p className={`mockup-summary summary-${deltaType}`}>
             {dynamicSummary}
           </p>
 
+          {/* Optimal 2-Hour Window */}
           <div className="mockup-window-box">
             <div className="window-header">
               <Compass size={14} className="text-sage" />
               <span>OPTIMAL 2-HOUR WINDOW</span>
             </div>
             <div className="window-time">
-              {dynamicWindowTime} • {dynamicWindowSub}
+              {activeDaySnapshot.optimalWindow} • {activeDaySnapshot.optimalSub}
             </div>
           </div>
 
+          {/* Recommended Gear Checklist */}
           <div className="mockup-footer">
             <div className="mockup-gear">
-              {dynamicGear.map((item, idx) => (
+              {activeDaySnapshot.gear.map((item, idx) => (
                 <span key={idx} className="gear-chip">
                   {item}
                 </span>
@@ -344,4 +444,3 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     </section>
   );
 };
-
