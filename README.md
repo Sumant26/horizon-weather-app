@@ -1,6 +1,6 @@
 # Horizon — Weather for Humans, Not Meteorologists
 
-> A minimalist, high-contrast, editorial weather intelligence ecosystem crafted for instant glanceability — featuring a native Flutter mobile client and a dark, modern React web companion.
+> A minimalist, high-contrast, editorial weather intelligence ecosystem crafted for instant glanceability — featuring a native Flutter mobile client and a dark, modern React web companion styled with the **Twilight Heather** palette.
 
 [![Horizon CI Pipeline](https://github.com/Sumant26/horizon-weather-app/actions/workflows/ci.yml/badge.svg)](https://github.com/Sumant26/horizon-weather-app/actions/workflows/ci.yml)
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter)](https://flutter.dev)
@@ -48,14 +48,14 @@ horizon_weather_app/
 │       ├── screens/                 # HomeScreen & layout compositions
 │       └── state/                   # Sealed WeatherState & WeatherNotifier
 │
-├── horizon-web/                     # React + TypeScript Web Companion
+├── horizon-web/                     # React + TypeScript Web Companion (Twilight Heather Theme)
 │   ├── public/                      # Static assets, release APKs, manifest.json
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── layout/              # Navbar, Footer
 │   │   │   ├── sections/            # HeroSection, FeaturesShowcase, DownloadCenter
 │   │   │   └── ui/                  # SideloadGuideModal, QR Generator, Badges
-│   │   ├── core/constants/          # Metadata, deep dark color tokens, typography
+│   │   ├── core/constants/          # Metadata, Twilight Heather tokens, typography
 │   │   ├── domain/                  # TypeScript interfaces and feature contracts
 │   │   └── state/                   # UI state hooks and download tracking
 │   ├── package.json                 # Web build scripts & dependencies
@@ -82,77 +82,21 @@ horizon_weather_app/
 - **Night Sky Clarity Index**: Real-time atmospheric transparency metrics shown during night hours.
 - **Zero Third-Party Dependencies**: Pure Flutter SDK implementation for ultra-fast startup and small bundle footprint.
 
-### Mobile Tech Stack
-| Component | Technology | Purpose |
-|---|---|---|
-| Framework | **Flutter (SDK >= 3.0.0)** | Cross-platform native mobile UI |
-| Language | **Dart 3.x** | Strongly-typed client logic |
-| Design System | **Material 3** | Modern typography and layout primitives |
-| State Management | **ValueNotifier / Sealed Classes** | Predictable, lightweight reactive state |
-| Animations | **AnimatedContainer / AnimatedSwitcher** | Fluid 60/120 FPS ambient transitions |
-
-### Getting Started (Mobile)
-
-```bash
-# Clone the repository
-git clone https://github.com/Sumant26/horizon-weather-app.git
-cd horizon-weather-app
-
-# Install Flutter dependencies
-flutter pub get
-
-# Run static analysis (0 error / 0 warning standard)
-flutter analyze
-
-# Execute automated tests
-flutter test
-
-# Launch the app on a connected device or emulator
-flutter run
-```
-
 ---
 
 ## 2. Horizon Web (`horizon-web`)
 
-**Horizon Web** is the official dark companion showcase and direct distribution portal for Horizon. Built with React 18, TypeScript, and Vite, it delivers an editorial showcase and an integrated multi-platform distribution center.
+**Horizon Web** is styled with the **Twilight Heather** aesthetic — deep celestial obsidian with calming lavender and starlight cyan highlights:
 
-### Web Features
-- **Deep Dark Velvet Obsidian Aesthetic**: High-contrast OLED dark palette (`#080B11`), warm honey-gold accents (`#F6AD55`), and soft ivory linen typography (`#FAF6F0`).
-- **Editorial Showcase & Live Preview**: Interactive glanceable preview demonstrating Horizon's temperature delta and comfort window computations.
-- **Direct Multi-Platform Distribution**:
-  - **Android APK Direct Sideload**: Direct APK download with dynamically generated QR codes for instant mobile scanning and SHA-256 integrity verification.
-  - **iOS PWA Installation Walkthrough**: Visual 3-step guide for adding Horizon to the iOS Home Screen as a standalone web app.
-- **Interactive Sideloading Guide Modal**: Step-by-step security and installation walkthrough for Android users.
+### Web Color System (Twilight Heather)
+- **Celestial Dark Base**: `#080A12` with subtle midnight lavender radial gradients (`rgba(167, 139, 250, 0.10)`).
+- **Primary Accent**: **Soft Heather Lavender** (`#A78BFA` / `#C4B5FD` / `#8B5CF6`).
+- **Secondary Accent**: **Twilight Starlight Cyan** (`#81E6D9`).
+- **Typography**: **Soft Ivory Linen** (`#FAF6F0`) and twilight muted slate (`#B4BED2`).
 
-### Web Tech Stack
-| Package | Version | Purpose |
-|---|---|---|
-| **React** | `^18.2.0` | Declarative UI components |
-| **TypeScript** | `^5.3.3` | Type safety and domain contracts |
-| **Vite** | `^5.1.4` | Ultra-fast development and optimized bundling |
-| **Lucide React** | `^0.344.0` | Minimalist iconography |
-| **QRCode** | `^1.5.3` | Dynamic QR code generation for APK mobile downloads |
-| **Vitest & Testing Library** | `^1.3.1` | Unit testing and component verification |
-
-### Getting Started (Web)
-
-```bash
-# Navigate to the web workspace
-cd horizon-web
-
-# Install npm dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Run unit and component tests
-npm test
-
-# Typecheck and build for production
-npm run build
-```
+### Direct Multi-Platform Distribution
+- **Android APK Direct Sideload**: Download APK directly or scan the dynamic QR code from your phone; includes SHA-256 verification and step-by-step sideload guide.
+- **iOS PWA Walkthrough**: 3-step visual instruction for installing Horizon to the iOS Home Screen without App Store accounts.
 
 ---
 
@@ -160,24 +104,15 @@ npm run build
 
 ### Husky Git Hooks
 The repository includes a pre-commit quality gate (`.husky/pre-commit`) that automatically verifies:
-- `dart format --set-exit-if-changed .` (Dart formatting)
-- `flutter analyze` (Strict static analysis)
-- `flutter test` (Flutter unit and widget tests)
-- `npm run typecheck` & `npm test` in `horizon-web/` (TypeScript & Vitest tests)
+- `dart format --set-exit-if-changed lib test`
+- `flutter analyze`
+- `flutter test`
+- `npm run typecheck` & `npm test` in `horizon-web/`
 
 ### GitHub Actions Pipeline
 Continuous Integration is configured via `.github/workflows/ci.yml`:
-- **Flutter Job**: Validates formatting, static analysis, unit tests with coverage, and builds release APKs.
+- **Flutter Job**: Validates formatting, static analysis, unit tests with coverage, and builds verification APK.
 - **Web Job**: Performs type checking, ESLint inspection, Vitest test execution, and production bundling.
-
----
-
-## Design Philosophy
-
-Horizon is built around three core principles:
-1. **Minimalism** — Zero bloat, zero clutter. Every element on screen serves an immediate purpose.
-2. **Glanceability** — All critical environmental context is visible within two seconds of opening the app.
-3. **Context Over Data** — Weather translated into human meaning rather than raw numbers.
 
 ---
 

@@ -21,7 +21,7 @@ export const FEATURE_PILLARS: FeaturePillar[] = [
     iconName: 'History',
     highlightStat: '-2.8°C',
     statLabel: 'Cooler than yesterday at this hour',
-    accentColor: '#F6AD55',
+    accentColor: '#A78BFA',
   },
   {
     id: 'optimal-windows',
@@ -33,7 +33,7 @@ export const FEATURE_PILLARS: FeaturePillar[] = [
     iconName: 'Activity',
     highlightStat: '07:00 – 09:00 AM',
     statLabel: 'Optimal morning comfort window',
-    accentColor: '#9AE6B4',
+    accentColor: '#81E6D9',
   },
   {
     id: 'minimal-gear',
@@ -45,7 +45,7 @@ export const FEATURE_PILLARS: FeaturePillar[] = [
     iconName: 'CheckCircle2',
     highlightStat: '3 Essentials',
     statLabel: 'Sunglasses • Windbreaker • Water',
-    accentColor: '#ED8936',
+    accentColor: '#C4B5FD',
   },
   {
     id: 'night-clarity',
@@ -57,6 +57,6 @@ export const FEATURE_PILLARS: FeaturePillar[] = [
     iconName: 'MoonStar',
     highlightStat: '94% Clarity',
     statLabel: 'High atmospheric transparency',
-    accentColor: '#81E6D9',
+    accentColor: '#38BDF8',
   },
 ];

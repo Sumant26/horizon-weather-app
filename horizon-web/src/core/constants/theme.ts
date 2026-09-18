@@ -13,24 +13,24 @@ export const APP_METADATA = {
 };
 
 export const COLOR_TOKENS = {
-  // Deep Dark Nordic Obsidian Base
-  bgDark: '#070C0A', // Midnight alpine obsidian
-  bgSurface: '#0D1714', // Calming dark pine container surface
-  bgCard: '#121F1B', // Deep glass card surface
-  bgCardHover: '#182A25',
-  bgGlass: 'rgba(18, 31, 27, 0.78)', // Translucent dark sage glass
-  borderGlass: 'rgba(154, 230, 180, 0.16)', // Subtle calming sage border
-  borderGlassHover: 'rgba(154, 230, 180, 0.42)',
+  // Deep Celestial Twilight Heather Palette
+  bgDark: '#080a12', // Deep midnight celestial obsidian
+  bgSurface: '#0f1322', // Twilight dark container surface
+  bgCard: '#14182c', // Deep celestial glass card surface
+  bgCardHover: '#1c223d',
+  bgGlass: 'rgba(20, 24, 44, 0.78)', // Translucent twilight glass
+  borderGlass: 'rgba(167, 139, 250, 0.16)', // Subtle heather lavender border
+  borderGlassHover: 'rgba(167, 139, 250, 0.42)',
 
-  // Cozy & Comforting Non-Gold Accents
-  accentSage: '#9AE6B4', // AppColors.warmSage (Primary cozy accent)
-  accentSageMuted: '#68D391', // Calming medium pine
-  accentTwilightCyan: '#81E6D9', // AppColors.twilightCyan
-  accentTerracotta: '#E2876A', // Warm terracotta secondary
-  accentIcy: '#38BDF8', // AppColors.icyCyan
+  // Twilight Heather Accents & Highlights
+  accentLavender: '#A78BFA', // Soft heather lavender (Primary cozy accent)
+  accentLavenderLight: '#C4B5FD', // Luminous twilight highlight
+  accentViolet: '#8B5CF6', // Deep twilight violet
+  accentTwilightCyan: '#81E6D9', // Starry twilight cyan
+  accentIcy: '#38BDF8', // Celestial icy cyan
 
   // Typography Tokens
-  textPrimary: '#FAF6F0', // AppColors.softLinen (Warm ivory linen)
-  textSecondary: '#A9C4B8', // Soft sage-tinted stone
-  textMuted: '#6E8B80', // Calming muted pine slate
+  textPrimary: '#FAF6F0', // Soft Linen (Warm ivory linen)
+  textSecondary: '#B4BED2', // Twilight muted slate
+  textMuted: '#74819B', // Celestial muted tone
 };
