@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   fetchUserLiveWeather,
+  getCachedUserWeather,
   LiveWeatherData,
   DaySnapshot,
 } from '../domain/services/live_weather_service';
@@ -63,15 +64,18 @@ export const DEFAULT_TOMORROW: DaySnapshot = {
 };
 
 export function useWeatherStore() {
-  const [liveData, setLiveData] = useState<LiveWeatherData | null>(null);
-  const [isLocating, setIsLocating] = useState<boolean>(false);
+  const [liveData, setLiveData] = useState<LiveWeatherData | null>(() => getCachedUserWeather());
+  const [isLocating, setIsLocating] = useState<boolean>(() => getCachedUserWeather() === null);
   const [locationError, setLocationError] = useState<string | null>(null);
 
-  const refreshWeather = useCallback(async () => {
-    setIsLocating(true);
+  const refreshWeather = useCallback(async (force = false) => {
+    // If we have cached data, don't show full loading spinner unless forced
+    if (!liveData) {
+      setIsLocating(true);
+    }
     setLocationError(null);
     try {
-      const data = await fetchUserLiveWeather();
+      const data = await fetchUserLiveWeather({ forceRefresh: force });
       setLiveData(data);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Location detection unavailable';
@@ -79,7 +83,7 @@ export function useWeatherStore() {
     } finally {
       setIsLocating(false);
     }
-  }, []);
+  }, [liveData]);
 
   useEffect(() => {
     refreshWeather();
@@ -100,6 +104,6 @@ export function useWeatherStore() {
     tomorrow,
     isLocating,
     locationError,
-    refreshWeather,
+    refreshWeather: () => refreshWeather(true),
   };
 }

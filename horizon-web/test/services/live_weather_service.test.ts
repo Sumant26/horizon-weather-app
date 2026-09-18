@@ -1,12 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { fetchUserLiveWeather } from '../../src/domain/services/live_weather_service';
+import {
+  fetchUserLiveWeather,
+  saveCachedUserWeather,
+  clearCachedUserWeather,
+} from '../../src/domain/services/live_weather_service';
 
 describe('Live Weather Service', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    clearCachedUserWeather();
   });
 
-  it('rejects if geolocation is not supported', async () => {
+  it('rejects if geolocation is not supported and no cache exists', async () => {
     Object.defineProperty(global.navigator, 'geolocation', {
       value: undefined,
       configurable: true,
@@ -16,6 +21,81 @@ describe('Live Weather Service', () => {
     await expect(fetchUserLiveWeather()).rejects.toThrow(
       'Geolocation is not supported by your browser.'
     );
+  });
+
+  it('returns cached weather if geolocation fails but cache exists', async () => {
+    const mockCached = {
+      locationName: 'Pune, India',
+      microclimate: 'Kothrud • Live GPS',
+      latitude: 18.52,
+      longitude: 73.85,
+      yesterday: {
+        id: 'yesterday' as const,
+        dateLabel: 'Yesterday',
+        dateStr: 'Sep 17',
+        temperature: 24.0,
+        tempMin: 18.0,
+        tempMax: 26.0,
+        feelsLike: 24.0,
+        weatherCode: 0,
+        conditionName: 'Clear Skies',
+        deltaLabel: 'Baseline',
+        deltaValue: 0,
+        deltaType: 'mild' as const,
+        summary: 'Clear baseline',
+        optimalWindow: '08:00 – 10:00 AM',
+        optimalSub: 'High Clarity',
+        gear: ['🕶️ Sunglasses'],
+      },
+      today: {
+        id: 'today' as const,
+        dateLabel: 'Today',
+        dateStr: 'Sep 18',
+        temperature: 25.6,
+        tempMin: 19.0,
+        tempMax: 27.0,
+        feelsLike: 25.6,
+        weatherCode: 1,
+        conditionName: 'Partly Cloudy',
+        deltaLabel: '+1.6° Warmer',
+        deltaValue: 1.6,
+        deltaType: 'warm' as const,
+        summary: 'Warm day',
+        optimalWindow: '07:30 – 09:30 AM',
+        optimalSub: 'Comfort 90',
+        gear: ['🕶️ Sunglasses'],
+      },
+      tomorrow: {
+        id: 'tomorrow' as const,
+        dateLabel: 'Tomorrow',
+        dateStr: 'Sep 19',
+        temperature: 26.0,
+        tempMin: 19.5,
+        tempMax: 28.0,
+        feelsLike: 26.0,
+        weatherCode: 0,
+        conditionName: 'Clear',
+        deltaLabel: '+0.4° Warmer',
+        deltaValue: 0.4,
+        deltaType: 'warm' as const,
+        summary: 'Sunny tomorrow',
+        optimalWindow: '08:00 – 10:00 AM',
+        optimalSub: 'Comfort 92',
+        gear: ['🕶️ Sunglasses'],
+      },
+    };
+
+    saveCachedUserWeather(mockCached, 18.52, 73.85);
+
+    Object.defineProperty(global.navigator, 'geolocation', {
+      value: undefined,
+      configurable: true,
+      writable: true,
+    });
+
+    const data = await fetchUserLiveWeather();
+    expect(data.locationName).toBe('Pune, India');
+    expect(data.today.temperature).toBe(25.6);
   });
 
   it('fetches and computes user live weather for yesterday, today, and tomorrow successfully', async () => {
@@ -80,7 +160,7 @@ describe('Live Weather Service', () => {
       return Promise.reject(new Error('Unknown URL'));
     });
 
-    const data = await fetchUserLiveWeather();
+    const data = await fetchUserLiveWeather({ forceRefresh: true });
     expect(data.locationName).toContain('San Francisco');
     expect(data.microclimate).toContain('Mission District');
     expect(data.today.temperature).toBe(19.4);

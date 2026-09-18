@@ -25,6 +25,98 @@ export interface LiveWeatherData {
   yesterday: DaySnapshot;
   today: DaySnapshot;
   tomorrow: DaySnapshot;
+  cachedAt?: number;
+}
+
+const STORAGE_KEY_WEATHER = 'horizon_user_weather_cache_v1';
+const STORAGE_KEY_COORDS = 'horizon_user_coords_cache_v1';
+const CACHE_TTL_MS = 20 * 60 * 1000; // 20 minutes
+
+const memoryStore = new Map<string, string>();
+
+interface KeyValueStorage {
+  getItem(key: string): string | null;
+  setItem(key: string, value: string): void;
+  removeItem(key: string): void;
+  clear(): void;
+}
+
+function getStorage(): KeyValueStorage {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const testKey = '__test_ls__';
+      window.localStorage.setItem(testKey, '1');
+      window.localStorage.removeItem(testKey);
+      return window.localStorage;
+    }
+  } catch {
+    // fallback to memoryStore
+  }
+  return {
+    getItem: (k: string) => memoryStore.get(k) ?? null,
+    setItem: (k: string, v: string) => {
+      memoryStore.set(k, v);
+    },
+    removeItem: (k: string) => {
+      memoryStore.delete(k);
+    },
+    clear: () => {
+      memoryStore.clear();
+    },
+  };
+}
+
+export function clearCachedUserWeather(): void {
+  try {
+    const storage = getStorage();
+    storage.removeItem(STORAGE_KEY_WEATHER);
+    storage.removeItem(STORAGE_KEY_COORDS);
+  } catch {
+    // fallback
+  }
+  memoryStore.clear();
+}
+
+export function getCachedUserWeather(): LiveWeatherData | null {
+  try {
+    const storage = getStorage();
+    const raw = storage.getItem(STORAGE_KEY_WEATHER);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed && parsed.data) {
+      return parsed.data as LiveWeatherData;
+    }
+  } catch {
+    // fallback
+  }
+  return null;
+}
+
+export function saveCachedUserWeather(data: LiveWeatherData, lat: number, lon: number): void {
+  try {
+    const storage = getStorage();
+    storage.setItem(
+      STORAGE_KEY_WEATHER,
+      JSON.stringify({ data: { ...data, cachedAt: Date.now() }, savedAt: Date.now() })
+    );
+    storage.setItem(
+      STORAGE_KEY_COORDS,
+      JSON.stringify({ lat, lon, savedAt: Date.now() })
+    );
+  } catch {
+    // fallback
+  }
+}
+
+export function getLastCachedCoords(): { lat: number; lon: number; savedAt: number } | null {
+  try {
+    const storage = getStorage();
+    const raw = storage.getItem(STORAGE_KEY_COORDS);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
 }
 
 function getWeatherConditionName(code: number): string {
@@ -69,9 +161,21 @@ function formatDateLabel(date: Date): string {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-export async function fetchUserLiveWeather(): Promise<LiveWeatherData> {
+export interface FetchWeatherOptions {
+  forceRefresh?: boolean;
+}
+
+export async function fetchUserLiveWeather(options?: FetchWeatherOptions): Promise<LiveWeatherData> {
+  const forceRefresh = options?.forceRefresh ?? false;
+  const cachedData = getCachedUserWeather();
+  const cachedCoords = getLastCachedCoords();
+
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
+      if (cachedData) {
+        resolve(cachedData);
+        return;
+      }
       reject(new Error('Geolocation is not supported by your browser.'));
       return;
     }
@@ -82,11 +186,25 @@ export async function fetchUserLiveWeather(): Promise<LiveWeatherData> {
           const lat = position.coords.latitude;
           const lon = position.coords.longitude;
 
+          // Check if location is same as cached location (< 0.04 deg ~4km) and cache is fresh
+          if (!forceRefresh && cachedData && cachedCoords) {
+            const dist = Math.hypot(lat - cachedCoords.lat, lon - cachedCoords.lon);
+            const isFresh = Date.now() - (cachedCoords.savedAt || 0) < CACHE_TTL_MS;
+            if (dist < 0.04 && isFresh) {
+              resolve(cachedData);
+              return;
+            }
+          }
+
           // 1. Fetch 3-day weather (past_days=1, forecast_days=2)
           const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,uv_index&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&past_days=1&forecast_days=2&timezone=auto`;
           const forecastRes = await fetch(forecastUrl);
 
           if (!forecastRes.ok) {
+            if (cachedData) {
+              resolve(cachedData);
+              return;
+            }
             throw new Error('Failed to fetch weather data.');
           }
 
@@ -94,7 +212,6 @@ export async function fetchUserLiveWeather(): Promise<LiveWeatherData> {
           const now = new Date();
           const currentHour = now.getHours();
 
-          // Hourly indices: 0..23 (Yesterday), 24..47 (Today), 48..71 (Tomorrow)
           const hourlyTemps: number[] = forecastData.hourly?.temperature_2m ?? [];
           const hourlyCodes: number[] = forecastData.hourly?.weather_code ?? [];
 
@@ -258,7 +375,7 @@ export async function fetchUserLiveWeather(): Promise<LiveWeatherData> {
             gear: computeGear(tomorrowTemp, tomorrowCode, uvIndex),
           };
 
-          resolve({
+          const result: LiveWeatherData = {
             locationName: cityName,
             microclimate: neighborhood,
             latitude: lat,
@@ -266,12 +383,23 @@ export async function fetchUserLiveWeather(): Promise<LiveWeatherData> {
             yesterday: yesterdaySnapshot,
             today: todaySnapshot,
             tomorrow: tomorrowSnapshot,
-          });
+          };
+
+          saveCachedUserWeather(result, lat, lon);
+          resolve(result);
         } catch (err) {
+          if (cachedData) {
+            resolve(cachedData);
+            return;
+          }
           reject(err);
         }
       },
       (error) => {
+        if (cachedData) {
+          resolve(cachedData);
+          return;
+        }
         reject(error);
       },
       { timeout: 10000, enableHighAccuracy: true }
