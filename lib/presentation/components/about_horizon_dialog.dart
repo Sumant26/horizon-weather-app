@@ -100,7 +100,8 @@ class AboutHorizonDialog extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.03),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                  border:
+                      Border.all(color: Colors.white.withValues(alpha: 0.05)),
                 ),
                 child: const Text(
                   'Horizon is a minimalist, high-contrast, editorial weather experience designed for instant human clarity — highlighting temperature relative to yesterday, optimal outdoor comfort windows, and calming ambient soundscapes.',

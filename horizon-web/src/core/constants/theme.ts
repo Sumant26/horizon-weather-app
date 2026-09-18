@@ -13,25 +13,24 @@ export const APP_METADATA = {
 };
 
 export const COLOR_TOKENS = {
-  // Deep Dark / Velvet Obsidian Base Palette
-  bgDark: '#080B11', // Midnight velvet obsidian ground
-  bgSurface: '#0E131E', // Dark high-contrast surface
-  bgCard: '#131A28', // Deep glass card surface
-  bgCardHover: '#182132',
-  bgGlass: 'rgba(19, 26, 40, 0.78)', // Translucent dark glass
-  borderGlass: 'rgba(246, 173, 85, 0.15)', // Honey-gold subtle border
-  borderGlassHover: 'rgba(246, 173, 85, 0.40)',
+  // Deep Dark Nordic Obsidian Base
+  bgDark: '#070C0A', // Midnight alpine obsidian
+  bgSurface: '#0D1714', // Calming dark pine container surface
+  bgCard: '#121F1B', // Deep glass card surface
+  bgCardHover: '#182A25',
+  bgGlass: 'rgba(18, 31, 27, 0.78)', // Translucent dark sage glass
+  borderGlass: 'rgba(154, 230, 180, 0.16)', // Subtle calming sage border
+  borderGlassHover: 'rgba(154, 230, 180, 0.42)',
 
-  // AppColors Accents & Highlights
-  accentGold: '#F6AD55', // AppColors.honeyGold
-  accentAmber: '#FBD38D', // AppColors.softAmber
-  accentPeach: '#ED8936', // AppColors.warmTerracotta
-  accentSage: '#9AE6B4', // AppColors.warmSage
-  accentCyan: '#81E6D9', // AppColors.twilightCyan
-  accentIcyCyan: '#38BDF8', // AppColors.icyCyan
+  // Cozy & Comforting Non-Gold Accents
+  accentSage: '#9AE6B4', // AppColors.warmSage (Primary cozy accent)
+  accentSageMuted: '#68D391', // Calming medium pine
+  accentTwilightCyan: '#81E6D9', // AppColors.twilightCyan
+  accentTerracotta: '#E2876A', // Warm terracotta secondary
+  accentIcy: '#38BDF8', // AppColors.icyCyan
 
   // Typography Tokens
   textPrimary: '#FAF6F0', // AppColors.softLinen (Warm ivory linen)
-  textSecondary: '#C4B5A5', // Warm muted stone
-  textMuted: '#8C7A6B', // Warm soft slate
+  textSecondary: '#A9C4B8', // Soft sage-tinted stone
+  textMuted: '#6E8B80', // Calming muted pine slate
 };

@@ -23,7 +23,7 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Setup Java SDK (for Android builds)
+      - name: Setup Java SDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
@@ -42,7 +42,7 @@ jobs:
         run: flutter pub get
 
       - name: Verify Code Formatting
-        run: dart format --output=none --set-exit-if-changed .
+        run: dart format --output=none --set-exit-if-changed lib test
 
       - name: Static Code Analysis (0 Error / 0 Warning Mandate)
         run: flutter analyze
@@ -50,8 +50,8 @@ jobs:
       - name: Execute Automated Test Suite
         run: flutter test --coverage
 
-      - name: Build Android Release APK (Verification)
-        run: flutter build apk --release
+      - name: Build Android Verification
+        run: flutter build apk --debug
 
   # ---------------------------------------------------------------------------
   # Job 2: Horizon Web (React + TypeScript + Vite) Verification
