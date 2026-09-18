@@ -156,74 +156,84 @@ class WeatherHeader extends StatelessWidget {
           ),
         ),
         // Action Buttons
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              visualDensity: VisualDensity.compact,
-              padding: const EdgeInsets.all(6),
-              constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
-              icon: const Icon(Icons.graphic_eq_rounded,
-                  color: AppColors.honeyGold, size: 18),
-              tooltip: 'Atmospheric Soundscapes',
-              onPressed: onOpenSoundscape,
-            ),
-            Stack(
-              alignment: Alignment.topRight,
+        Flexible(
+          flex: 0,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
                   visualDensity: VisualDensity.compact,
                   padding: const EdgeInsets.all(6),
                   constraints:
                       const BoxConstraints(minWidth: 34, minHeight: 34),
-                  icon: const Icon(Icons.notifications_outlined,
-                      color: Colors.white60, size: 18),
-                  tooltip: 'Proactive Intelligence',
-                  onPressed: onOpenSmartTriggers,
+                  icon: const Icon(Icons.graphic_eq_rounded,
+                      color: AppColors.honeyGold, size: 18),
+                  tooltip: 'Atmospheric Soundscapes',
+                  onPressed: onOpenSoundscape,
                 ),
-                if (activeTriggerCount > 0)
-                  Positioned(
-                    top: 6,
-                    right: 6,
-                    child: Container(
-                      width: 7,
-                      height: 7,
-                      decoration: const BoxDecoration(
-                        color: AppColors.softAmber,
-                        shape: BoxShape.circle,
-                      ),
+                Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    IconButton(
+                      visualDensity: VisualDensity.compact,
+                      padding: const EdgeInsets.all(6),
+                      constraints:
+                          const BoxConstraints(minWidth: 34, minHeight: 34),
+                      icon: const Icon(Icons.notifications_outlined,
+                          color: Colors.white60, size: 18),
+                      tooltip: 'Proactive Intelligence',
+                      onPressed: onOpenSmartTriggers,
                     ),
-                  ),
+                    if (activeTriggerCount > 0)
+                      Positioned(
+                        top: 6,
+                        right: 6,
+                        child: Container(
+                          width: 7,
+                          height: 7,
+                          decoration: const BoxDecoration(
+                            color: AppColors.softAmber,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  padding: const EdgeInsets.all(6),
+                  constraints:
+                      const BoxConstraints(minWidth: 34, minHeight: 34),
+                  icon: const Icon(Icons.share_outlined,
+                      color: Colors.white60, size: 17),
+                  tooltip: 'Share Snapshot',
+                  onPressed: onOpenShareStory,
+                ),
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  padding: const EdgeInsets.all(6),
+                  constraints:
+                      const BoxConstraints(minWidth: 34, minHeight: 34),
+                  icon: const Icon(Icons.tune_rounded,
+                      color: Colors.white60, size: 18),
+                  tooltip: 'Settings & Units',
+                  onPressed: onOpenSettings,
+                ),
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  padding: const EdgeInsets.all(6),
+                  constraints:
+                      const BoxConstraints(minWidth: 34, minHeight: 34),
+                  icon: const Icon(Icons.refresh_rounded,
+                      color: Colors.white60, size: 18),
+                  tooltip: 'Refresh Forecast',
+                  onPressed: onRefresh,
+                ),
               ],
             ),
-            IconButton(
-              visualDensity: VisualDensity.compact,
-              padding: const EdgeInsets.all(6),
-              constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
-              icon: const Icon(Icons.share_outlined,
-                  color: Colors.white60, size: 17),
-              tooltip: 'Share Snapshot',
-              onPressed: onOpenShareStory,
-            ),
-            IconButton(
-              visualDensity: VisualDensity.compact,
-              padding: const EdgeInsets.all(6),
-              constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
-              icon: const Icon(Icons.tune_rounded,
-                  color: Colors.white60, size: 18),
-              tooltip: 'Settings & Units',
-              onPressed: onOpenSettings,
-            ),
-            IconButton(
-              visualDensity: VisualDensity.compact,
-              padding: const EdgeInsets.all(6),
-              constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
-              icon: const Icon(Icons.refresh_rounded,
-                  color: Colors.white60, size: 18),
-              tooltip: 'Refresh Forecast',
-              onPressed: onRefresh,
-            ),
-          ],
+          ),
         ),
       ],
     );

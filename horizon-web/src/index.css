@@ -1610,13 +1610,49 @@ h1, h2, h3, h4, .font-display {
 }
 
 /* ==========================================================================
-   RESPONSIVE QUERIES
+   RESPONSIVE QUERIES — UNIVERSAL MULTI-DISPLAY SCALING
    ========================================================================== */
+
+/* Large Displays & 4K Ultrawide Screens */
+@media (min-width: 1440px) {
+  .section-container,
+  .hero-section,
+  .navbar-inner,
+  .footer-inner {
+    max-width: 1240px;
+  }
+}
+
+/* Tablets & Small Laptops (640px to 1024px) */
 @media (max-width: 1024px) {
   .hero-section {
     grid-template-columns: 1fr;
-    gap: 36px;
-    padding-top: 36px;
+    gap: 40px;
+    padding-top: 40px;
+  }
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .download-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+/* Medium Mobile & Small Tablets (480px to 768px) */
+@media (max-width: 768px) {
+  .navbar-nav {
+    display: none;
+  }
+  .section-container {
+    padding: 60px 20px;
+  }
+  .hero-section {
+    padding: 30px 20px 40px;
+    gap: 32px;
   }
   .features-grid {
     grid-template-columns: 1fr;
@@ -1624,18 +1660,9 @@ h1, h2, h3, h4, .font-display {
   .download-card-grid {
     grid-template-columns: 1fr;
   }
-  .footer-grid {
-    grid-template-columns: 1fr;
-    gap: 25px;
-  }
-}
-
-@media (max-width: 768px) {
-  .navbar-nav {
-    display: none;
-  }
-  .hero-stats-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .hero-mockup-card {
+    padding: 22px 18px;
+    border-radius: var(--radius-lg);
   }
   .ios-steps-container {
     grid-template-columns: 1fr;
@@ -1646,3 +1673,131 @@ h1, h2, h3, h4, .font-display {
     text-align: center;
   }
 }
+
+/* Compact Smartphones (360px to 480px) */
+@media (max-width: 480px) {
+  .navbar-inner {
+    padding: 10px 14px;
+  }
+  .navbar-city-name {
+    max-width: 85px;
+  }
+  .section-container {
+    padding: 44px 14px;
+  }
+  .hero-section {
+    padding: 20px 14px 30px;
+    gap: 24px;
+  }
+  .hero-title {
+    font-size: clamp(1.85rem, 7.5vw, 2.3rem);
+    line-height: 1.18;
+    margin-bottom: 14px;
+  }
+  .hero-desc {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    margin-bottom: 22px;
+  }
+  .hero-cta-group {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 26px;
+  }
+  .btn-lg {
+    width: 100%;
+    padding: 12px 18px;
+    font-size: 0.92rem;
+  }
+  .hero-stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding-top: 14px;
+  }
+  .hero-stat-number {
+    font-size: 1.15rem;
+  }
+  .hero-stat-label {
+    font-size: 0.68rem;
+  }
+  .hero-mockup-card {
+    padding: 18px 14px;
+    border-radius: var(--radius-md);
+  }
+  .city-title-text {
+    max-width: 130px;
+    font-size: 0.85rem;
+  }
+  .three-day-tab-bar {
+    gap: 2px;
+    padding: 2px;
+  }
+  .day-tab-pill {
+    font-size: 0.68rem;
+    padding: 5px 4px;
+  }
+  .scrub-tab-pill {
+    padding: 5px 7px;
+  }
+  .mockup-temp-main {
+    font-size: 3.2rem;
+  }
+  .delta-badge {
+    font-size: 0.8rem;
+  }
+  .delta-sub {
+    font-size: 0.65rem;
+  }
+  .horizon-spectrum-strip {
+    gap: 5px;
+    margin-bottom: 12px;
+  }
+  .spectrum-card {
+    padding: 6px 7px;
+  }
+  .spectrum-temp {
+    font-size: 1.1rem;
+  }
+  .spectrum-label {
+    font-size: 0.6rem;
+  }
+  .spectrum-date {
+    font-size: 0.56rem;
+  }
+  .spectrum-sub {
+    font-size: 0.6rem;
+  }
+  .mockup-summary {
+    font-size: 0.82rem;
+    padding: 10px 12px;
+  }
+  .window-time {
+    font-size: 0.8rem;
+  }
+  .gear-chip {
+    font-size: 0.72rem;
+    padding: 4px 8px;
+  }
+}
+
+/* Ultra-Compact Screens & Foldables in Cover Mode (< 360px) */
+@media (max-width: 360px) {
+  .navbar-location-pill {
+    display: none;
+  }
+  .hero-title {
+    font-size: 1.65rem;
+  }
+  .hero-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .mockup-temp-main {
+    font-size: 2.7rem;
+  }
+  .day-tab-pill span {
+    font-size: 0.62rem;
+  }
+}
+

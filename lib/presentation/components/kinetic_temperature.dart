@@ -31,26 +31,28 @@ class KineticTemperatureDisplay extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Main Kinetic Temperature Number
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '$tempVal°',
-              style: TextStyle(
-                fontSize: 108,
-                fontWeight: data.temperature > 28
-                    ? FontWeight.w400
-                    : (data.temperature < 15
-                        ? FontWeight.w200
-                        : FontWeight.w300),
-                height: 0.88,
-                letterSpacing: -5,
-                color: AppColors.softLinen,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$tempVal°',
+                style: TextStyle(
+                  fontSize: 108,
+                  fontWeight: data.temperature > 28
+                      ? FontWeight.w400
+                      : (data.temperature < 15
+                          ? FontWeight.w200
+                          : FontWeight.w300),
+                  height: 0.88,
+                  letterSpacing: -5,
+                  color: AppColors.softLinen,
+                ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Padding(
+              const SizedBox(width: 12),
+              Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,8 +80,8 @@ class KineticTemperatureDisplay extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         const SizedBox(height: 18),
 
