@@ -63,7 +63,7 @@ void main() {
   late DetectCurrentLocation detectCurrentLocation;
   late LocationNotifier locationNotifier;
 
-  setUp(() {
+  setUp(() async {
     settingsRepo = MockSettingsRepository();
     weatherRepo = MockWeatherRepository();
     searchLocations = SearchLocations(weatherRepo);
@@ -73,6 +73,7 @@ void main() {
       searchLocations: searchLocations,
       detectCurrentLocation: detectCurrentLocation,
     );
+    await locationNotifier.loadLocations();
   });
 
   test('LocationNotifier detects and prepends current location', () async {

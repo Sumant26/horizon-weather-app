@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../core/constants/api_endpoints.dart';
 import '../../core/errors/exceptions.dart';
+import '../../core/location/location_bridge.dart';
 import '../../core/utils/app_logger.dart';
 
 abstract class RemoteWeatherDatasource {
@@ -130,7 +131,46 @@ class RemoteWeatherDatasourceImpl implements RemoteWeatherDatasource {
 
   @override
   Future<Map<String, dynamic>?> detectCurrentLocation() async {
-    // 1. Try Primary IP Geolocation endpoint
+    // 1. Try High-Precision Device/Browser GPS Geolocation
+    try {
+      final gps = await getBrowserCoordinates();
+      if (gps != null) {
+        final lat = gps['latitude']!;
+        final lon = gps['longitude']!;
+        AppLogger.info('Device GPS resolved: $lat, $lon');
+
+        final reverseUri = Uri.parse(
+            'https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=$lat&longitude=$lon&localityLanguage=en');
+        final response =
+            await _client.get(reverseUri).timeout(const Duration(seconds: 6));
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body) as Map<String, dynamic>;
+          final city = data['city'] as String?;
+          final locality = data['locality'] as String?;
+          final state = data['principalSubdivision'] as String?;
+          final country = data['countryName'] as String?;
+
+          final bestName = (city != null && city.isNotEmpty)
+              ? city
+              : ((locality != null && locality.isNotEmpty)
+                  ? locality
+                  : 'Current Location');
+
+          return {
+            'name': bestName,
+            'admin1': state,
+            'country': country,
+            'latitude': lat,
+            'longitude': lon,
+            'is_current': true,
+          };
+        }
+      }
+    } catch (e) {
+      AppLogger.warning('Device GPS detection failed: $e. Falling back to IP.');
+    }
+
+    // 2. Fallback: Try Primary IP Geolocation endpoint
     try {
       final uri = ApiEndpoints.ipLocationPrimary();
       AppLogger.debug('Detecting current location from $uri');
@@ -156,7 +196,7 @@ class RemoteWeatherDatasourceImpl implements RemoteWeatherDatasource {
       AppLogger.warning('Primary IP geolocation failed: $e. Trying fallback.');
     }
 
-    // 2. Try Fallback IP Geolocation endpoint
+    // 3. Fallback: Try Secondary IP Geolocation endpoint
     try {
       final uri = ApiEndpoints.ipLocationSecondary();
       AppLogger.debug('Detecting current location fallback from $uri');

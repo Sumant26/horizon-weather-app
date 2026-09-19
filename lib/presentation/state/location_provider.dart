@@ -56,10 +56,10 @@ class LocationNotifier extends ValueNotifier<LocationState> {
         _detectCurrentLocation = detectCurrentLocation,
         super(const LocationState(
             savedLocations: LocationEntity.defaultSavedLocations)) {
-    _loadLocations();
+    loadLocations();
   }
 
-  Future<void> _loadLocations() async {
+  Future<void> loadLocations() async {
     final saved = await _settingsRepository.getSavedLocations();
     final index = await _settingsRepository.getActiveLocationIndex();
     value = value.copyWith(

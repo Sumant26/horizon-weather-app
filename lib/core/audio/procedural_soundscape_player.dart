@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'procedural_audio_bridge.dart';
 
 enum SoundscapeType {
   rainDrizzle(
@@ -82,20 +83,20 @@ class ProceduralSoundscapePlayer extends ValueNotifier<SoundscapeState> {
   void play(SoundscapeType type) {
     _ticker?.cancel();
     value = value.copyWith(isPlaying: true, currentType: type);
-
-    // Keep an active ambient pulse for UI indicators
-    _ticker = Timer.periodic(const Duration(milliseconds: 500), (_) {
-      // Pulse notification if active
-    });
+    playProceduralSound(type.name);
+    setProceduralVolume(value.volume);
   }
 
   void pause() {
     _ticker?.cancel();
     value = value.copyWith(isPlaying: false);
+    stopProceduralSound();
   }
 
   void setVolume(double newVolume) {
-    value = value.copyWith(volume: newVolume.clamp(0.0, 1.0));
+    final clamped = newVolume.clamp(0.0, 1.0);
+    value = value.copyWith(volume: clamped);
+    setProceduralVolume(clamped);
   }
 
   void toggleAutoSync() {

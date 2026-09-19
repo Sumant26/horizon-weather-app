@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../core/audio/procedural_soundscape_player.dart' as core_audio;
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/utils/haptic_feedback_util.dart';
 import '../../domain/entities/daily_briefing_entity.dart';
 
 class DailyBriefingCard extends StatefulWidget {
@@ -38,12 +40,27 @@ class _DailyBriefingCardState extends State<DailyBriefingCard>
   }
 
   void _toggleSoundscape() {
+    HapticFeedbackHelper.selection();
+    final player = core_audio.ProceduralSoundscapePlayer.instance;
     setState(() {
       _isPlayingSoundscape = !_isPlayingSoundscape;
       if (_isPlayingSoundscape) {
         _waveController.repeat(reverse: true);
+        final mapped = switch (widget.briefing.recommendedSoundscape) {
+          SoundscapeType.gentleRain => core_audio.SoundscapeType.rainDrizzle,
+          SoundscapeType.morningBirdsong =>
+            core_audio.SoundscapeType.morningSongbirds,
+          SoundscapeType.forestBreeze =>
+            core_audio.SoundscapeType.alpineBreeze,
+          SoundscapeType.hearthEmbers =>
+            core_audio.SoundscapeType.nightCampfire,
+          SoundscapeType.starlitChimes =>
+            core_audio.SoundscapeType.nightCampfire,
+        };
+        player.play(mapped);
       } else {
         _waveController.stop();
+        player.pause();
       }
     });
   }

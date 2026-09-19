@@ -38,19 +38,5 @@ class LocationEntity {
 
   static const List<LocationEntity> defaultSavedLocations = [
     defaultLocation,
-    LocationEntity(
-      name: 'Kyoto',
-      admin1: 'Kyoto Prefecture',
-      country: 'Japan',
-      latitude: 35.0116,
-      longitude: 135.7681,
-    ),
-    LocationEntity(
-      name: 'Reykjavik',
-      admin1: 'Capital Region',
-      country: 'Iceland',
-      latitude: 64.1466,
-      longitude: -21.9426,
-    ),
   ];
 }

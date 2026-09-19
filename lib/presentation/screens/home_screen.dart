@@ -85,6 +85,11 @@ class _WeatherHomeScreenState extends State<WeatherHomeScreen> {
   }
 
   void _loadCurrentWeather({bool forceRefresh = false}) {
+    final locState = widget.locationNotifier.value;
+    if (locState.savedLocations.length <= 1 &&
+        locState.activeLocation.isCurrentLocation) {
+      widget.locationNotifier.detectCurrentLocation(autoSelect: true);
+    }
     final activeLoc = widget.locationNotifier.value.activeLocation;
     widget.weatherNotifier
         .fetchWeatherForLocation(activeLoc, forceRefresh: forceRefresh);

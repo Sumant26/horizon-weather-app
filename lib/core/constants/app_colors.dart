@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../theme/circadian_theme_engine.dart';
 
 class AppColors {
   AppColors._();
@@ -90,80 +91,154 @@ class AppColors {
     }
   }
 
-  // Dynamic Theme Card Decoration
+  /// Returns a rich complementary solid card background that pairs with the background
+  static Color getComplementaryCardColor({
+    VisualThemeMode mode = VisualThemeMode.cozyWarm,
+    dynamic condition,
+    DateTime? time,
+  }) {
+    if (mode == VisualThemeMode.oledMinimalist) {
+      return const Color(0xFF0D0D0D);
+    }
+    if (mode == VisualThemeMode.slateAtmosphere) {
+      return const Color(0xFF172033);
+    }
+    if (mode == VisualThemeMode.nordicPine) {
+      return const Color(0xFF10201A);
+    }
+
+    final condName = condition?.toString() ?? '';
+    if (condName.contains('rain') ||
+        condName.contains('drizzle') ||
+        condName.contains('thunderstorm')) {
+      return const Color(0xFF182632);
+    }
+    if (condName.contains('extremeHeat')) {
+      return const Color(0xFF35160C);
+    }
+    if (condName.contains('overcast') ||
+        condName.contains('foggy') ||
+        condName.contains('snowy')) {
+      return const Color(0xFF20252D);
+    }
+
+    // Circadian Solar Phase complementary color
+    final phase = CircadianThemeEngine.getPhase(time ?? DateTime.now());
+    switch (phase) {
+      case CircadianPhase.dawn:
+        return const Color(0xFF1E1A2E);
+      case CircadianPhase.sunrise:
+        return const Color(0xFF281921);
+      case CircadianPhase.goldenMorning:
+        return const Color(0xFF121F2D);
+      case CircadianPhase.solarNoon:
+        return const Color(0xFF101E2E);
+      case CircadianPhase.goldenHour:
+        return const Color(0xFF2C1914);
+      case CircadianPhase.twilightDusk:
+        return const Color(0xFF1A1833);
+      case CircadianPhase.deepNight:
+        return const Color(0xFF12151D);
+    }
+  }
+
+  /// Returns a subtle, harmonizing border color that complements the card surface
+  static Color getComplementaryCardBorder({
+    VisualThemeMode mode = VisualThemeMode.cozyWarm,
+    dynamic condition,
+    DateTime? time,
+  }) {
+    if (mode == VisualThemeMode.oledMinimalist) {
+      return const Color(0xFF242424);
+    }
+    if (mode == VisualThemeMode.slateAtmosphere) {
+      return const Color(0xFF29384E);
+    }
+    if (mode == VisualThemeMode.nordicPine) {
+      return const Color(0xFF1E3B31);
+    }
+
+    final condName = condition?.toString() ?? '';
+    if (condName.contains('rain') ||
+        condName.contains('drizzle') ||
+        condName.contains('thunderstorm')) {
+      return const Color(0xFF2B4458);
+    }
+    if (condName.contains('extremeHeat')) {
+      return const Color(0xFF5E2715);
+    }
+    if (condName.contains('overcast') ||
+        condName.contains('foggy') ||
+        condName.contains('snowy')) {
+      return const Color(0xFF3B4450);
+    }
+
+    final phase = CircadianThemeEngine.getPhase(time ?? DateTime.now());
+    switch (phase) {
+      case CircadianPhase.dawn:
+        return const Color(0xFF383050);
+      case CircadianPhase.sunrise:
+        return const Color(0xFF4C2C39);
+      case CircadianPhase.goldenMorning:
+        return const Color(0xFF223850);
+      case CircadianPhase.solarNoon:
+        return const Color(0xFF203752);
+      case CircadianPhase.goldenHour:
+        return const Color(0xFF522E24);
+      case CircadianPhase.twilightDusk:
+        return const Color(0xFF36325C);
+      case CircadianPhase.deepNight:
+        return const Color(0xFF232A38);
+    }
+  }
+
+  // Dynamic Theme Card Decoration with complementary color matching
   static BoxDecoration cardDecoration(
     VisualThemeMode mode, {
     Color? accentBorder,
+    dynamic condition,
+    DateTime? time,
   }) {
-    switch (mode) {
-      case VisualThemeMode.oledMinimalist:
-        return BoxDecoration(
-          color: const Color(0xFF000000),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: accentBorder ?? const Color(0xFF262626),
-            width: 1.0,
-          ),
-          boxShadow: const [],
+    final bgColor = getComplementaryCardColor(
+      mode: mode,
+      condition: condition,
+      time: time,
+    );
+    final borderColor = accentBorder ??
+        getComplementaryCardBorder(
+          mode: mode,
+          condition: condition,
+          time: time,
         );
-      case VisualThemeMode.nordicPine:
-        return BoxDecoration(
-          color: const Color(0xFF0E1A17).withValues(alpha: 0.75),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color:
-                accentBorder ?? const Color(0xFF9AE6B4).withValues(alpha: 0.18),
-            width: 1.0,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF040A08).withValues(alpha: 0.4),
-              blurRadius: 18,
-              offset: const Offset(0, 6),
-            ),
-          ],
-        );
-      case VisualThemeMode.slateAtmosphere:
-        return BoxDecoration(
-          color: const Color(0xFF1E293B).withValues(alpha: 0.65),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color:
-                accentBorder ?? const Color(0xFF38BDF8).withValues(alpha: 0.16),
-            width: 1.0,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF020617).withValues(alpha: 0.35),
-              blurRadius: 18,
-              offset: const Offset(0, 6),
-            ),
-          ],
-        );
-      case VisualThemeMode.cozyWarm:
-        return BoxDecoration(
-          color: const Color(0xFF201B17).withValues(alpha: 0.70),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color:
-                accentBorder ?? const Color(0xFFF6AD55).withValues(alpha: 0.14),
-            width: 1.0,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.30),
-              blurRadius: 18,
-              offset: const Offset(0, 6),
-            ),
-          ],
-        );
-    }
+
+    return BoxDecoration(
+      color: bgColor,
+      borderRadius: BorderRadius.circular(24),
+      border: Border.all(
+        color: borderColor,
+        width: 1.0,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.35),
+          blurRadius: 18,
+          offset: const Offset(0, 6),
+        ),
+      ],
+    );
   }
 
   // Backward-compatible fallback for cozy card decoration
   static BoxDecoration cozyCardDecoration({
     VisualThemeMode mode = VisualThemeMode.cozyWarm,
     Color? accentBorder,
+    dynamic condition,
+    DateTime? time,
   }) =>
-      cardDecoration(mode, accentBorder: accentBorder);
+      cardDecoration(
+        mode,
+        accentBorder: accentBorder,
+        condition: condition,
+        time: time,
+      );
 }
