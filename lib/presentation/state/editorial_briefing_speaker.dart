@@ -34,8 +34,7 @@ class EditorialSpeakerState {
 }
 
 class EditorialBriefingSpeaker extends ValueNotifier<EditorialSpeakerState> {
-  static final EditorialBriefingSpeaker instance =
-      EditorialBriefingSpeaker._();
+  static final EditorialBriefingSpeaker instance = EditorialBriefingSpeaker._();
 
   EditorialBriefingSpeaker._() : super(const EditorialSpeakerState());
 

@@ -103,7 +103,8 @@ class OffGridHikeExporterModal extends StatelessWidget {
             // Scrollable Dossier Preview Card
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 child: Container(
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
@@ -133,7 +134,8 @@ class OffGridHikeExporterModal extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: AppColors.honeyGold.withValues(alpha: 0.15),
+                              color:
+                                  AppColors.honeyGold.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Text(

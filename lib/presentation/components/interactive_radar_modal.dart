@@ -136,13 +136,16 @@ class _InteractiveRadarModalState extends State<InteractiveRadarModal>
     final distFromCenter = sqrt(pow(nx - 0.5, 2) + pow(ny - 0.5, 2));
     final elev = (45 + (1.0 - ny) * 380 + sin(nx * pi * 4) * 60).round();
     final lapseRate = (elev / 1000.0) * 6.5; // ~6.5C drop per 1000m
-    final simulatedTemp = widget.baseTemperatureC - lapseRate + (0.5 - nx) * 1.5;
+    final simulatedTemp =
+        widget.baseTemperatureC - lapseRate + (0.5 - nx) * 1.5;
 
     final isRaining = widget.condition == WeatherCondition.rainy ||
         widget.condition == WeatherCondition.drizzle;
     final rainRate = isRaining
         ? (max(0.0, (1.0 - distFromCenter * 2.2)) * 6.8 * (_timeOffset + 0.4))
-        : (max(0.0, (0.6 - distFromCenter)) * 2.2 * (_timeOffset > 0.6 ? 1 : 0));
+        : (max(0.0, (0.6 - distFromCenter)) *
+            2.2 *
+            (_timeOffset > 0.6 ? 1 : 0));
 
     final windSpd = widget.windStream.speedKmh *
         (1.0 + (elev / 500.0) * 0.4 + (ny - 0.5) * 0.2);
@@ -224,7 +227,8 @@ class _InteractiveRadarModalState extends State<InteractiveRadarModal>
                     ],
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close_rounded, color: Colors.white60),
+                    icon:
+                        const Icon(Icons.close_rounded, color: Colors.white60),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ],
@@ -291,7 +295,8 @@ class _InteractiveRadarModalState extends State<InteractiveRadarModal>
                   borderRadius: BorderRadius.circular(22),
                   child: LayoutBuilder(
                     builder: (context, constraints) {
-                      final size = Size(constraints.maxWidth, constraints.maxHeight);
+                      final size =
+                          Size(constraints.maxWidth, constraints.maxHeight);
 
                       return Stack(
                         children: [
@@ -316,8 +321,7 @@ class _InteractiveRadarModalState extends State<InteractiveRadarModal>
                                           timeOffset: _timeOffset,
                                           windDirection: widget
                                               .windStream.directionDegrees,
-                                          windSpeed:
-                                              widget.windStream.speedKmh,
+                                          windSpeed: widget.windStream.speedKmh,
                                           isRaining: widget.condition ==
                                                   WeatherCondition.rainy ||
                                               widget.condition ==
@@ -487,8 +491,8 @@ class _ProbeInspectorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tempStr = UnitConverter.formatTemperatureString(
-        probe.temperatureC, tempUnit);
+    final tempStr =
+        UnitConverter.formatTemperatureString(probe.temperatureC, tempUnit);
     final spdStr =
         UnitConverter.formatSpeedString(probe.windSpeedKmh, speedUnit);
 
@@ -497,7 +501,8 @@ class _ProbeInspectorCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF131722).withValues(alpha: 0.95),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.twilightCyan.withValues(alpha: 0.4)),
+        border:
+            Border.all(color: AppColors.twilightCyan.withValues(alpha: 0.4)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.6),
@@ -688,8 +693,8 @@ class _InteractiveRadarMapPainter extends CustomPainter {
 
     // Shower Band 1
     echoPaint.color = AppColors.twilightCyan.withValues(alpha: 0.45);
-    canvas.drawCircle(
-        Offset(center.dx - 45 + shiftX, center.dy - 30 + shiftY), 55, echoPaint);
+    canvas.drawCircle(Offset(center.dx - 45 + shiftX, center.dy - 30 + shiftY),
+        55, echoPaint);
 
     // Core Shower Cell 2 (Intense)
     echoPaint.color = AppColors.honeyGold.withValues(alpha: 0.40);

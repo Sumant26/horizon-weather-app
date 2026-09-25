@@ -51,8 +51,7 @@ class _DailyBriefingCardState extends State<DailyBriefingCard>
           SoundscapeType.gentleRain => core_audio.SoundscapeType.rainDrizzle,
           SoundscapeType.morningBirdsong =>
             core_audio.SoundscapeType.morningSongbirds,
-          SoundscapeType.forestBreeze =>
-            core_audio.SoundscapeType.alpineBreeze,
+          SoundscapeType.forestBreeze => core_audio.SoundscapeType.alpineBreeze,
           SoundscapeType.hearthEmbers =>
             core_audio.SoundscapeType.nightCampfire,
           SoundscapeType.starlitChimes =>

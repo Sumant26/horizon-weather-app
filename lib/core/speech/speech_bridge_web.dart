@@ -27,9 +27,8 @@ void speakEditorialBriefing(
   try {
     final startCb = onStart != null ? (() => onStart()).toJS : null;
     final endCb = onEnd != null ? (() => onEnd()).toJS : null;
-    final errCb = onError != null
-        ? ((JSString err) => onError(err.toDart)).toJS
-        : null;
+    final errCb =
+        onError != null ? ((JSString err) => onError(err.toDart)).toJS : null;
 
     _jsSpeak(text.toJS, startCb, endCb, errCb);
   } catch (_) {

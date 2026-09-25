@@ -85,8 +85,7 @@ void main() {
 
     test('syncWithWeather executes without throwing on all conditions', () {
       expect(
-        () => coordinator.syncWithWeather(
-            testWeather, TemperatureUnit.celsius),
+        () => coordinator.syncWithWeather(testWeather, TemperatureUnit.celsius),
         returnsNormally,
       );
 

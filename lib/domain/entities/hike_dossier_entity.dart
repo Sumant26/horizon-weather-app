@@ -67,10 +67,8 @@ class HikeDossierEntity {
   String toHtmlDocument(TemperatureUnit tempUnit) {
     final rows = forecast7Day.map((d) {
       final dayStr = DateFormatter.formatDayOfWeek(d.date);
-      final minStr =
-          UnitConverter.formatTemperatureString(d.minTemp, tempUnit);
-      final maxStr =
-          UnitConverter.formatTemperatureString(d.maxTemp, tempUnit);
+      final minStr = UnitConverter.formatTemperatureString(d.minTemp, tempUnit);
+      final maxStr = UnitConverter.formatTemperatureString(d.maxTemp, tempUnit);
       return '''
         <tr>
           <td><strong>$dayStr (${DateFormatter.formatShortDate(d.date)})</strong></td>
@@ -147,10 +145,8 @@ class HikeDossierEntity {
     buffer.writeln('| :--- | :--- | :--- | :--- |');
     for (final d in forecast7Day) {
       final dayStr = DateFormatter.formatDayOfWeek(d.date);
-      final minStr =
-          UnitConverter.formatTemperatureString(d.minTemp, tempUnit);
-      final maxStr =
-          UnitConverter.formatTemperatureString(d.maxTemp, tempUnit);
+      final minStr = UnitConverter.formatTemperatureString(d.minTemp, tempUnit);
+      final maxStr = UnitConverter.formatTemperatureString(d.maxTemp, tempUnit);
       buffer.writeln(
           '| $dayStr (${DateFormatter.formatShortDate(d.date)}) | ${d.condition.displayName} | $minStr / $maxStr | UV ${d.maxUvIndex.round()} |');
     }

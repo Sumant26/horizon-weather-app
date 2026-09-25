@@ -89,7 +89,8 @@ class _AudioBriefingModalState extends State<AudioBriefingModal>
         child: ValueListenableBuilder<EditorialSpeakerState>(
           valueListenable: _speaker,
           builder: (context, speakerState, _) {
-            final isSpeaking = speakerState.isSpeaking && !speakerState.isPaused;
+            final isSpeaking =
+                speakerState.isSpeaking && !speakerState.isPaused;
 
             return Column(
               mainAxisSize: MainAxisSize.min,
@@ -174,7 +175,8 @@ class _AudioBriefingModalState extends State<AudioBriefingModal>
                           children: List.generate(12, (index) {
                             final barHeight = 12.0 +
                                 (val * 48.0 * ((index % 3 + 1) / 3.0)) *
-                                    (0.4 + 0.6 * (1.0 - (index - 6).abs() / 6.0));
+                                    (0.4 +
+                                        0.6 * (1.0 - (index - 6).abs() / 6.0));
 
                             return Container(
                               margin: const EdgeInsets.symmetric(horizontal: 3),
@@ -182,8 +184,7 @@ class _AudioBriefingModalState extends State<AudioBriefingModal>
                               height: isSpeaking ? barHeight : 8,
                               decoration: BoxDecoration(
                                 color: isSpeaking
-                                    ? accent.withValues(
-                                        alpha: 0.6 + 0.4 * val)
+                                    ? accent.withValues(alpha: 0.6 + 0.4 * val)
                                     : Colors.white24,
                                 borderRadius: BorderRadius.circular(3),
                               ),

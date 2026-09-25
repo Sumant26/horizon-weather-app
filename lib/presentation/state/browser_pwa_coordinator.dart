@@ -41,8 +41,7 @@ class BrowserPwaCoordinator {
     final tempStr =
         UnitConverter.formatTemperatureString(weather.temperature, tempUnit);
     final emoji = _getConditionEmoji(weather.condition);
-    final pageTitle =
-        '$tempStr $emoji Horizon — ${weather.location.name}';
+    final pageTitle = '$tempStr $emoji Horizon — ${weather.location.name}';
 
     updateBrowserTab(
       title: pageTitle,
