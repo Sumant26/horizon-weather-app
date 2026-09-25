@@ -7,6 +7,7 @@ import '../../domain/entities/weather_condition.dart';
 import '../components/activity_window_selector.dart';
 import '../components/air_quality_card.dart';
 import '../components/atmospheric_canvas.dart';
+import '../components/audio_briefing_modal.dart';
 import '../components/biophilic_health_card.dart';
 import '../components/card_detail_modal.dart';
 import '../components/celestial_path_widget.dart';
@@ -14,11 +15,13 @@ import '../components/daily_briefing_card.dart';
 import '../components/deep_meteorology_card.dart';
 import '../components/gear_checklist_sheet.dart';
 import '../components/hourly_forecast_strip.dart';
+import '../components/interactive_radar_modal.dart';
 import '../components/journey_simulator_card.dart';
 import '../components/kinetic_temperature.dart';
 import '../components/location_page_indicator.dart';
 import '../components/location_search_modal.dart';
 import '../components/minute_precipitation_card.dart';
+import '../components/off_grid_hike_exporter_modal.dart';
 import '../components/proactive_notifications_modal.dart';
 import '../components/saved_locations_drawer.dart';
 import '../components/seven_day_forecast_card.dart';
@@ -30,6 +33,7 @@ import '../components/weather_header.dart';
 import '../components/weather_radar_card.dart';
 import '../components/yesterday_comparison_chart.dart';
 import '../screens/settings_sheet.dart';
+import '../state/browser_pwa_coordinator.dart';
 import '../state/location_provider.dart';
 import '../state/settings_provider.dart';
 import '../state/weather_provider.dart';
@@ -121,6 +125,10 @@ class _WeatherHomeScreenState extends State<WeatherHomeScreen> {
           ProceduralSoundscapePlayer.instance.syncWithCondition(
             weatherState.data.condition.displayName,
             isNightTime,
+          );
+          BrowserPwaCoordinator.instance.syncWithWeather(
+            weatherState.data,
+            settings.temperatureUnit,
           );
         }
 
@@ -245,6 +253,16 @@ class _WeatherHomeScreenState extends State<WeatherHomeScreen> {
             onOpenSavedLocations: () => SavedLocationsDrawer.show(context,
                 locationNotifier: widget.locationNotifier),
             onOpenSoundscape: () => SoundscapePlayerModal.show(context),
+            onOpenVoiceBroadcast: () => AudioBriefingModal.show(
+              context,
+              briefing: data.dailyBriefing,
+              locationName: data.locationName,
+            ),
+            onOpenOffGridDossier: () => OffGridHikeExporterModal.show(
+              context,
+              weather: data,
+              tempUnit: tempUnit,
+            ),
             onOpenSettings: () => SettingsSheet.show(context,
                 notifier: widget.settingsNotifier, weather: data),
             onOpenShareStory: () =>
@@ -373,12 +391,14 @@ class _WeatherHomeScreenState extends State<WeatherHomeScreen> {
             condition: data.condition,
             windStream: data.windStream,
             speedUnit: widget.settingsNotifier.value.speedUnit,
-            onTap: () => CardDetailModal.show(
-              context: context,
-              content: CardDetailFactory.createWeatherRadar(
-                  data, widget.settingsNotifier.value.speedUnit),
-              weather: data,
-              unit: tempUnit,
+            onTap: () => InteractiveRadarModal.show(
+              context,
+              condition: data.condition,
+              windStream: data.windStream,
+              baseTemperatureC: data.temperature,
+              locationName: data.locationName,
+              speedUnit: widget.settingsNotifier.value.speedUnit,
+              tempUnit: tempUnit,
             ),
           ),
           const SizedBox(height: 32),

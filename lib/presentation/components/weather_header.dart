@@ -16,6 +16,8 @@ class WeatherHeader extends StatelessWidget {
   final VoidCallback onOpenShareStory;
   final VoidCallback onOpenSmartTriggers;
   final VoidCallback onRefresh;
+  final VoidCallback? onOpenVoiceBroadcast;
+  final VoidCallback? onOpenOffGridDossier;
 
   const WeatherHeader({
     super.key,
@@ -30,6 +32,8 @@ class WeatherHeader extends StatelessWidget {
     required this.onOpenShareStory,
     required this.onOpenSmartTriggers,
     required this.onRefresh,
+    this.onOpenVoiceBroadcast,
+    this.onOpenOffGridDossier,
   });
 
   @override
@@ -211,6 +215,28 @@ class WeatherHeader extends StatelessWidget {
                   tooltip: 'Share Snapshot',
                   onPressed: onOpenShareStory,
                 ),
+                if (onOpenVoiceBroadcast != null)
+                  IconButton(
+                    visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.all(6),
+                    constraints:
+                        const BoxConstraints(minWidth: 34, minHeight: 34),
+                    icon: const Icon(Icons.record_voice_over_rounded,
+                        color: AppColors.twilightCyan, size: 17),
+                    tooltip: 'Voice Broadcast',
+                    onPressed: onOpenVoiceBroadcast,
+                  ),
+                if (onOpenOffGridDossier != null)
+                  IconButton(
+                    visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.all(6),
+                    constraints:
+                        const BoxConstraints(minWidth: 34, minHeight: 34),
+                    icon: const Icon(Icons.backpack_outlined,
+                        color: AppColors.honeyGold, size: 17),
+                    tooltip: 'Off-Grid Hike Dossier',
+                    onPressed: onOpenOffGridDossier,
+                  ),
                 IconButton(
                   visualDensity: VisualDensity.compact,
                   padding: const EdgeInsets.all(6),

@@ -68,6 +68,23 @@ window.horizonAudio = {
     }
   },
 
+  duck(targetFraction = 0.2, duration = 0.3) {
+    if (this.gainNode && this.ctx) {
+      const current = this.gainNode.gain.value;
+      const target = current * targetFraction;
+      this.gainNode.gain.cancelScheduledValues(this.ctx.currentTime);
+      this.gainNode.gain.setTargetAtTime(target, this.ctx.currentTime, duration);
+    }
+  },
+
+  unduck(targetVol = 0.7, duration = 0.5) {
+    if (this.gainNode && this.ctx) {
+      const target = Math.max(0, Math.min(1, targetVol)) * 0.45;
+      this.gainNode.gain.cancelScheduledValues(this.ctx.currentTime);
+      this.gainNode.gain.setTargetAtTime(target, this.ctx.currentTime, duration);
+    }
+  },
+
   _createPinkNoiseBuffer() {
     const bufferSize = this.ctx.sampleRate * 2;
     const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
@@ -225,3 +242,223 @@ window.horizonAudio = {
     }
   }
 };
+
+// Horizon Ambient Voice Synthesizer (Web Speech API + Audio Ducking)
+window.horizonSpeech = {
+  activeUtterance: null,
+  isSpeaking: false,
+  onEndCallback: null,
+
+  speak(text, onStartCb, onEndCb, onErrorCb) {
+    if (!('speechSynthesis' in window)) {
+      if (onErrorCb) onErrorCb("Speech synthesis unsupported");
+      return;
+    }
+
+    this.stop();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    this.activeUtterance = utterance;
+    utterance.rate = 0.95; // Calm, editorial pacing
+    utterance.pitch = 1.0;
+
+    // Pick a natural sounding English voice if available
+    const voices = window.speechSynthesis.getVoices();
+    const preferredVoice = voices.find(v => 
+      v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Neural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Daniel') || v.name.includes('Premium'))
+    ) || voices.find(v => v.lang.startsWith('en'));
+
+    if (preferredVoice) {
+      utterance.voice = preferredVoice;
+    }
+
+    utterance.onstart = () => {
+      this.isSpeaking = true;
+      if (window.horizonAudio) {
+        window.horizonAudio.duck(0.18, 0.4);
+      }
+      if (onStartCb) onStartCb();
+    };
+
+    const cleanup = () => {
+      this.isSpeaking = false;
+      this.activeUtterance = null;
+      if (window.horizonAudio) {
+        window.horizonAudio.unduck(0.7, 0.6);
+      }
+    };
+
+    utterance.onend = () => {
+      cleanup();
+      if (onEndCb) onEndCb();
+    };
+
+    utterance.onerror = (e) => {
+      cleanup();
+      if (onErrorCb) onErrorCb(e.error || "Speech error");
+    };
+
+    window.speechSynthesis.speak(utterance);
+  },
+
+  pause() {
+    if (window.speechSynthesis && window.speechSynthesis.speaking) {
+      window.speechSynthesis.pause();
+    }
+  },
+
+  resume() {
+    if (window.speechSynthesis && window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
+  },
+
+  stop() {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    this.isSpeaking = false;
+    this.activeUtterance = null;
+    if (window.horizonAudio) {
+      window.horizonAudio.unduck(0.7, 0.4);
+    }
+  }
+};
+
+// Horizon Dynamic Tab & Canvas Favicon Generator
+window.horizonTab = {
+  updateTab(title, emoji, tempStr) {
+    if (title) {
+      document.title = title;
+    }
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 32;
+      canvas.height = 32;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // Dark background rounded pill
+      ctx.fillStyle = '#090A0F';
+      ctx.beginPath();
+      ctx.roundRect(0, 0, 32, 32, 8);
+      ctx.fill();
+
+      // Subtle cyan border
+      ctx.strokeStyle = '#64D2FF';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Draw Emoji
+      ctx.font = '16px "Apple Color Emoji", "Segoe UI Emoji", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(emoji || '🌤️', 16, 17);
+
+      const faviconUrl = canvas.toDataURL('image/png');
+      let link = document.querySelector("link[rel*='icon']");
+      if (!link) {
+        link = document.createElement('link');
+        link.type = 'image/png';
+        link.rel = 'shortcut icon';
+        document.getElementsByTagName('head')[0].appendChild(link);
+      }
+      link.href = faviconUrl;
+    } catch (e) {}
+  }
+};
+
+// Horizon Proactive Browser Notifications API Bridge
+window.horizonNotifications = {
+  requestPermission(callback) {
+    if (!('Notification' in window)) {
+      if (callback) callback('unsupported');
+      return;
+    }
+    Notification.requestPermission().then(permission => {
+      if (callback) callback(permission);
+    });
+  },
+
+  showNotification(title, body, tag) {
+    if (!('Notification' in window) || Notification.permission !== 'granted') {
+      return false;
+    }
+    try {
+      new Notification(title, {
+        body: body,
+        icon: 'icons/Icon-192.png',
+        badge: 'icons/Icon-192.png',
+        tag: tag || 'horizon-weather',
+        renotify: true
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+};
+
+// Horizon Off-Grid Hike & Trip Snapshot Exporter
+window.horizonExporter = {
+  printOrSaveReport(title, htmlBody) {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      window.print();
+      return;
+    }
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>${title || 'Horizon Weather Dossier'}</title>
+        <style>
+          @page { size: portrait; margin: 15mm; }
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #fff;
+            color: #111;
+            margin: 0;
+            padding: 20px;
+            font-size: 12pt;
+            line-height: 1.5;
+          }
+          h1 { font-size: 20pt; margin-bottom: 4px; letter-spacing: -0.5px; }
+          h2 { font-size: 14pt; border-bottom: 2px solid #111; padding-bottom: 4px; margin-top: 24px; }
+          .subtitle { color: #555; font-size: 10pt; margin-bottom: 20px; }
+          table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 10pt; }
+          th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; }
+          th { background: #f4f4f4; font-weight: 600; }
+          .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; background: #eee; font-weight: bold; font-size: 9pt; }
+          .section-box { border: 1px solid #111; padding: 12px; border-radius: 6px; margin: 12px 0; background: #fafafa; }
+          .footer { margin-top: 30px; font-size: 9pt; color: #888; text-align: center; border-top: 1px dashed #ccc; padding-top: 10px; }
+        </style>
+      </head>
+      <body>
+        ${htmlBody}
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 300);
+          };
+        </script>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  },
+
+  downloadMarkdown(filename, content) {
+    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || 'horizon-weather-dossier.md';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+};
+

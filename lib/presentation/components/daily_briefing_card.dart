@@ -4,6 +4,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/haptic_feedback_util.dart';
 import '../../domain/entities/daily_briefing_entity.dart';
+import '../state/editorial_briefing_speaker.dart';
 
 class DailyBriefingCard extends StatefulWidget {
   final DailyBriefingEntity briefing;
@@ -167,6 +168,70 @@ class _DailyBriefingCardState extends State<DailyBriefingCard>
               ),
             ),
             const SizedBox(height: 14),
+
+            // Voice Broadcast & Soundscape Action Row
+            Row(
+              children: [
+                Expanded(
+                  child: ValueListenableBuilder(
+                    valueListenable: EditorialBriefingSpeaker.instance,
+                    builder: (context, speakerState, _) {
+                      final isSpeaking = speakerState.isSpeaking &&
+                          !speakerState.isPaused &&
+                          speakerState.currentText == widget.briefing.narrative;
+
+                      return InkWell(
+                        onTap: () {
+                          HapticFeedbackHelper.selection();
+                          EditorialBriefingSpeaker.instance.playBriefing(
+                            widget.briefing.narrative,
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(14),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: isSpeaking
+                                ? accent.withValues(alpha: 0.18)
+                                : Colors.white.withValues(alpha: 0.05),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: isSpeaking
+                                  ? accent.withValues(alpha: 0.4)
+                                  : Colors.white.withValues(alpha: 0.08),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                isSpeaking
+                                    ? Icons.pause_rounded
+                                    : Icons.record_voice_over_rounded,
+                                size: 14,
+                                color: isSpeaking ? accent : Colors.white70,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                isSpeaking ? 'PAUSE VOICE' : 'LISTEN BROADCAST',
+                                style: TextStyle(
+                                  fontSize: 10.5,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.8,
+                                  color: isSpeaking ? accent : Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
 
             // Interactive Ambient Soundscape Controller
             InkWell(

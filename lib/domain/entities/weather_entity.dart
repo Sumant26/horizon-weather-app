@@ -62,6 +62,8 @@ class WeatherEntity {
     this.isFromCache = false,
   });
 
+  String get locationName => location.name;
+
   // Feature: Daily Briefing & Ambient Soundscape
   DailyBriefingEntity get dailyBriefing => DailyBriefingEntity.compute(
         timestamp: timestamp,
